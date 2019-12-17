@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="WPGTool">
+      <file>Resources/qt_zh_CN.qm</file>
+      <file>Resources/passingThrough.ico</file>
+      <file>Resources/passingThrough.jpg</file>
+      <file>Resources/drag2.ico</file>
+      <file>Resources/eye.cur</file>
+      <file>Resources/eye.ico</file>
+      <file>Resources/drag.ico</file>
+    </qresource>
+</RCC>

@@ -3,48 +3,8 @@
 #include <QtConcurrent>
 #include "Global_Fun.h"
 
-inline unsigned char CONVERT_ADJUST(double tmp)
-{
-	return (unsigned char)((tmp >= 0 && tmp <= 255)?tmp:(tmp < 0 ? 0 : 255));
-}
-//YUV420P to RGB24
-void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nWidth,int nHeight)
-{
-	unsigned char *tmpbuf=(unsigned char *)malloc(nWidth*nHeight*3);
-	unsigned char Y,U,V,R,G,B;
-	unsigned char* y_planar,*u_planar,*v_planar;
-	int rgb_width , u_width;
-	rgb_width = nWidth * 3;
-	u_width = (nWidth >> 1);
-	int ypSize = nWidth * nHeight;
-	int upSize = (ypSize>>2);
-	int offSet = 0;
-
-	y_planar = yuv_src;
-	u_planar = yuv_src + ypSize;
-	v_planar = u_planar + upSize;
-
-	for(int i = 0; i < nHeight; i++)
-	{
-		for(int j = 0; j < nWidth; j ++)
-		{
-			Y = *(y_planar + nWidth * i + j);
-			offSet = (i>>1) * (u_width) + (j>>1);
-			V = *(u_planar + offSet);
-			U = *(v_planar + offSet);
-
-			R = CONVERT_ADJUST((Y + (1.4075 * (V - 128))));
-			G = CONVERT_ADJUST((Y - (0.3455 * (U - 128) - 0.7169 * (V - 128))));
-			B = CONVERT_ADJUST((Y + (1.7790 * (U - 128))));			
-			offSet = rgb_width * i + j * 3;
-
-			rgb_dst[offSet] = B;
-			rgb_dst[offSet + 1] = G;
-			rgb_dst[offSet + 2] = R;
-		}
-	}
-	free(tmpbuf);
-}
+#define ATTRIB_VERTEX 3
+#define ATTRIB_TEXTURE 4
 ITAVPlayWidget::ITAVPlayWidget(QWidget *parent)
 	: QGLWidget(parent)
 {
@@ -53,7 +13,7 @@ ITAVPlayWidget::ITAVPlayWidget(QWidget *parent)
 	m_pDevice=NULL;
 	m_pContext=NULL;
 	m_pAVStreamPares = new ITAVStreamParse;
-	m_bStopPlay=false;
+	m_bStopPlay=true;
 	m_pAudioBuffer=NULL;
 	m_pAudioData=NULL;
 	m_nAudioDataSize=0;
@@ -64,12 +24,20 @@ ITAVPlayWidget::ITAVPlayWidget(QWidget *parent)
 	m_defaultImage.load(QString(":/MOSSOCX/Resources/novideo.png"));
 	m_bDefaultImageShow = false;
 	m_bPreview=false;
+
+	m_pVideoPlane[0]=NULL;
+	m_pVideoPlane[1]=NULL;
+	m_pVideoPlane[2]=NULL;
+	m_nVideoHeight=0;
+	m_nVideoWidth=0;
+	m_pVideoData=NULL;
 	connect(this,SIGNAL(audioPlayFini()),this,SLOT(doAudioPlayFini()));
+	this->setAcceptDrops(true);
 }
 
 ITAVPlayWidget::~ITAVPlayWidget()
 {
-
+	closeLastPlay();
 }
 int ITAVPlayWidget::initAudio()
 {
@@ -94,12 +62,39 @@ int ITAVPlayWidget::initAudio()
 	alSourcef(m_outSourceID, AL_GAIN, 1.0f);
 	alSourcei(m_outSourceID, AL_LOOPING, AL_FALSE);
 	alSourcef(m_outSourceID, AL_SOURCE_TYPE, AL_STREAMING);
+
+	m_pAudioData=new unsigned char[m_nAudioDataSize+1];
+	memset(m_pAudioData,0,m_nAudioDataSize+1);
+
+#ifdef USE_BUFFERS
+	alGenBuffers(AUDIO_BUFFS_NUM, m_uiBuffers);	
+
+	///first Fill Audio Buff
+	for (int iLoop = 0; iLoop < AUDIO_BUFFS_NUM; iLoop++)
+	{				
+		unsigned char* pBuf=NULL;
+		int nLen=0;
+		int64_t pps=0;
+		m_pAVStreamPares->getNextPcmData(pps,&pBuf,nLen);
+		if(pBuf && nLen>0)
+		{
+			memmove(m_pAudioData,pBuf,nLen);			
+			alBufferData(m_uiBuffers[iLoop], AL_FORMAT_STEREO16, m_pAudioData, nLen, 44100);
+			// Queue Buffer on the Source
+			alSourceQueueBuffers(m_outSourceID, 1,&m_uiBuffers[iLoop]);
+			delete[] pBuf;
+			pBuf=NULL;
+			nLen=0;
+		}			
+	}
+	alSourcePlay(m_outSourceID);
+#else
 	alGenBuffers(1, &m_outBuffID);	
 	alSourceQueueBuffers(m_outSourceID, 1, &m_outBuffID);
 	Sleep(20);
 	m_pAudioBuffer=new MemBuffer<uint8_t>(g_audioBuffSize);	
-	m_pAudioData=new unsigned char[m_nAudioDataSize+1];
-	memset(m_pAudioData,0,m_nAudioDataSize+1);
+#endif	
+	
 }
 int ITAVPlayWidget::finiAudio()
 {
@@ -120,11 +115,15 @@ int ITAVPlayWidget::finiAudio()
 		alDeleteSources( 1, &m_outSourceID );
 		m_outSourceID=0;
 	}
+#ifdef USE_BUFFERS
+	alDeleteBuffers( AUDIO_BUFFS_NUM, m_uiBuffers );
+#else
 	if(m_outBuffID)
 	{
 		alDeleteBuffers( 1, &m_outBuffID );
 		m_outBuffID=0;
 	}
+#endif	
 	if (m_pContext != NULL) 
 	{ 
 		alcDestroyContext(m_pContext); 
@@ -155,17 +154,7 @@ bool ITAVPlayWidget::updateAudioBuff(int nSampleFmt,int nBitRate,unsigned char* 
 	alSourceUnqueueBuffers(m_outSourceID, 1, &buffer);	//清除播放的数据		
 	//获取已经播放完的缓冲区，再填充新的进去，而不是新建，否则会一直循环一个  
 	alBufferData(buffer, format, pData, (ALsizei)nLen,44100);
-	alSourceQueueBuffers(m_outSourceID, 1, &buffer);	
-	/*ALint iState,iQueuedBuffers;
-	alGetSourcei(m_outSourceID, AL_SOURCE_STATE, &iState);
-	if (iState != AL_PLAYING)
-	{		
-		alGetSourcei(m_outSourceID, AL_BUFFERS_QUEUED, &iQueuedBuffers);
-		if (iQueuedBuffers)
-		{
-			alSourcePlay(m_outSourceID);
-		}		
-	}*/
+	alSourceQueueBuffers(m_outSourceID, 1, &buffer);		
 	return true;
 }
 bool ITAVPlayWidget::playSound()
@@ -218,14 +207,18 @@ void ITAVPlayWidget::contextMenuEvent(QContextMenuEvent *event)
 {
 	QMenu menu;
 	menu.addAction("打开", this, SLOT(doOpenAVFile()));
-	menu.addAction("停止播放", this, SLOT(doStopPlay()));
+	menu.addAction("停止", this, SLOT(doStopPlay()));
 	menu.exec(QCursor::pos());
 }
 bool ITAVPlayWidget::closeLastPlay()
 {
 	m_bStopPlay=true;
+	m_videoThread.waitForFinished();
+	m_audioThread.waitForFinished();
 	m_pAVStreamPares->closeDstAVFile();
 	finiAudio();
+	finiVideo();
+	update();	
 	return true;
 }
 void ITAVPlayWidget::doOpenAVFile()
@@ -235,33 +228,59 @@ void ITAVPlayWidget::doOpenAVFile()
 	if(filePath.isEmpty())
 	{
 		return;
-	}
-	m_bStopPlay=false;
-	m_pAVStreamPares->openDstAVFile(filePath.toStdString().c_str());
-	int64_t pps;
-	int nLen=0;
-		
-	m_nAudioDataSize=m_pAVStreamPares->getAudioChannel()*m_pAVStreamPares->getAudioFrequency();
-	if(m_nAudioDataSize<=4096)
-	{
-		m_nAudioDataSize=44100;
-	}
-	initAudio();	
-	playSound();	
-	m_nVideoWidth=m_pAVStreamPares->getVideoWidth();
-	m_nVideoHeight=m_pAVStreamPares->getVideoHeight();
-	int ysize=m_nVideoWidth*m_nVideoHeight;
-	m_pVideoData=new unsigned char[ysize*3+1];
-	memset(m_pVideoData,0,ysize*3+1);
-	m_bPreview=true;
-	initializeGL();
-	QtConcurrent::run(playAudioThread,this);
-	QtConcurrent::run(playVideoThread,this);
+	}	
+	openDstAVFile(filePath);
 }
 void ITAVPlayWidget::playAudioThread(ITAVPlayWidget* pThis)
 {
 	while(!pThis->m_bStopPlay)
 	{		
+#ifdef USE_BUFFERS
+		ALint	iBuffersProcessed, iTotalBuffersProcessed, iQueuedBuffers;
+		alGetSourcei(pThis->m_outSourceID, AL_BUFFERS_PROCESSED, &iBuffersProcessed);
+		while (iBuffersProcessed)
+		{
+			ALuint uiBuffer = 0;
+			alSourceUnqueueBuffers(pThis->m_outSourceID, 1, &uiBuffer);
+			if(!pThis->m_pAVStreamPares->isAudioBuffEmpty())
+			{				
+				unsigned char* pBuf=NULL;
+				int nLen=0;
+				int64_t pps=0;
+				pThis->m_pAVStreamPares->getNextPcmData(pps,&pBuf,nLen);
+				if(pBuf && nLen>0)
+				{
+					memmove(pThis->m_pAudioData,pBuf,nLen);					
+					alBufferData(uiBuffer, AL_FORMAT_STEREO16, pThis->m_pAudioData, nLen, 44100);
+					// Queue Buffer on the Source
+					alSourceQueueBuffers(pThis->m_outSourceID, 1, &uiBuffer);
+					delete[] pBuf;
+					pBuf=NULL;
+					nLen=0;
+				}				
+			}
+			iBuffersProcessed--;
+		}
+		ALint iState;
+		alGetSourcei(pThis->m_outSourceID, AL_SOURCE_STATE, &iState);
+		if (iState != AL_PLAYING)
+		{		
+			alGetSourcei(pThis->m_outSourceID, AL_BUFFERS_QUEUED, &iQueuedBuffers);
+			if (iQueuedBuffers)
+			{
+				alSourcePlay(pThis->m_outSourceID);
+			}
+			else
+			{
+				// Finished playing
+				emit pThis->audioPlayFini();
+				break;
+			}
+		}else
+		{
+			Sleep(SERVICE_UPDATE_PERIOD);
+		}
+#else
 		int processed=0;
 		alGetSourcei(pThis->m_outSourceID, AL_BUFFERS_PROCESSED, &processed); 
 		while (processed)		
@@ -311,38 +330,49 @@ void ITAVPlayWidget::playAudioThread(ITAVPlayWidget* pThis)
 				break;	///音频文件已播放完成，退出
 			}
 		}		
-		Sleep(10);				
+		Sleep(10);		
+#endif
 	}
 }
 void ITAVPlayWidget::playVideoThread(ITAVPlayWidget* pThis)
 {
 	while(!pThis->m_bStopPlay)
 	{
+		if(pThis->m_pAVStreamPares->isVideoBuffEmpty())
+		{
+			return;
+		}
 		int64_t pts;
 		unsigned char* pBuf=NULL;
 		int nLen=0;
 		int nWidth=0;
 		int nHeight=0;
-		pThis->m_pAVStreamPares->getNextYuvData(pts,&pBuf,nLen,nWidth,nHeight);		
+		int nSynVal=0;
+		pThis->m_pAVStreamPares->getNextYuvData(pts,&pBuf,nLen,nWidth,nHeight,nSynVal);		
 		if(pBuf && nLen>0)
-		{
-			
-			unsigned char* buffer_convert=new unsigned char[nWidth*nHeight*3+1];
-			memset(buffer_convert,0,nWidth*nHeight*3+1);
-			CONVERT_YUV420PtoRGB24(pBuf,buffer_convert,nWidth,nHeight);
-			memset(pThis->m_pVideoData,0,nWidth*nHeight*3/2+1);
-			memmove(pThis->m_pVideoData,buffer_convert,nWidth*nHeight*3);
-			delete[] buffer_convert;
-			pThis->displayVideo();//updateGL();
+		{			
+			//unsigned char* buffer_convert=new unsigned char[nWidth*nHeight*3+1];
+			//memset(buffer_convert,0,nWidth*nHeight*3+1);
+			//CONVERT_YUV420PtoRGB24(pBuf,buffer_convert,nWidth,nHeight);
+			//memset(pThis->m_pVideoData,0,nWidth*nHeight*3/2+1);
+			memmove(pThis->m_pVideoData,pBuf,nLen);
+			delete[] pBuf;
+			pBuf=NULL;
+			//pThis->displayVideo();//
+			pThis->update();
+			Sleep(nSynVal);
 		}
 	}
 }
 void ITAVPlayWidget::doAudioPlayFini()
 {
-	finiAudio();
+	//finiAudio();
+	///视频同步音频，则在音频完毕后，把视频也关闭 
+	closeLastPlay();
 }
 void ITAVPlayWidget::doStopPlay()
 {
+	stopSound();///先把声音暂停 否则老是卡下
 	closeLastPlay();
 }
 bool ITAVPlayWidget::refreshAudioQueue()
@@ -354,20 +384,8 @@ bool ITAVPlayWidget::refreshAudioQueue()
 
 void ITAVPlayWidget::initializeGL()
 {
-	initializeOpenGLFunctions(); 
-	glClearDepth(1.0);
-	glClearColor(0.0,0.0,0.0,0.0);
-	glEnable(GL_TEXTURE_2D);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);	
-//	setGeometry(300, 150, 640, 480);//设置窗口初始位置和大小
-	glShadeModel(GL_FLAT);//设置阴影平滑模式
-	glClearColor(0.5, 1.0, 0.2, 0);//改变窗口的背景颜色，不过我这里貌似设置后并没有什么效果
-//	glClearDepth(1.0);//设置深度缓存
-//	glEnable(GL_DEPTH_TEST);//允许深度测试
-//	glDepthFunc(GL_LEQUAL);//设置深度测试类型
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//进行透视校正
+	initializeOpenGLFunctions(); 	
+	InitShaders();
 }
 
 void ITAVPlayWidget::resizeGL( int width, int height )
@@ -378,48 +396,57 @@ void ITAVPlayWidget::resizeGL( int width, int height )
 	glMatrixMode(GL_PROJECTION);//选择投影矩阵
 	glLoadIdentity();//重置选择好的投影矩阵
 	// gluPerspective(45.0, (GLfloat)width/(GLfloat)height, 0.1, 100.0);//建立透视投影矩阵
-	//glMatirxMode(GL_MODELVIEW);//以下2句和上面出现的解释一样
-	glLoadIdentity();  
+	//glMatirxMode(GL_MODELVIEW);//以下2句和上面出现的解释一样	
 }
 
 void ITAVPlayWidget::paintGL()
 {
 	//glClear()函数在这里就是对initializeGL()函数中设置的颜色和缓存深度等起作用
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();//重置当前的模型观察矩阵？不是很理解！
-
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glLoadIdentity();//重置当前的模型观察矩阵？不是很理解！
+	if(!m_bStopPlay)
+	{
+		displayVideo();
+	}else
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Clear
+		glClearColor(0.0,0.0,0.0,0.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 }
 
 void ITAVPlayWidget::displayVideo()
 {
-	
-
-	//glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	//glLoadIdentity();
-	///*unsigned char* buffer_convert=new unsigned char[nWidth*nHeight*3+1];
-	//memset(buffer_convert,0,nWidth*nHeight*3+1);
-	//CONVERT_YUV420PtoRGB24(m_pVideoData,buffer_convert,nWidth,nHeight);
-	//memset(m_pVideoData,0,nWidth*nHeight*3/2+1);
-	//memmove(m_pVideoData,buffer_convert,nWidth*nHeight*3);*/
+	//glClear()函数在这里就是对initializeGL()函数中设置的颜色和缓存深度等起作用
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Clear
+	glClearColor(0.0,0.0,0.0,0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	//Y
 	//
-	//glTexImage2D(GL_TEXTURE_2D,0,4,m_nVideoWidth,m_nVideoHeight,0,GL_RGB,GL_UNSIGNED_BYTE,m_pVideoData); //生成纹理
-	//glTexSubImage2D(GL_TEXTURE_2D,0,0,0,m_nVideoWidth,m_nVideoHeight,GL_RGB,GL_UNSIGNED_BYTE,m_pVideoData); //生成纹理
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);//设置纹理参数
-	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	////!绘制纹理
-	//glBegin(GL_QUADS);
-	//glTexCoord2f(0.0, 1.0);glVertex2f(-1.0f, 1.0f); //!左上角坐标（0.0,1.0）
-	//glTexCoord2f(0.0, 0.0);glVertex2f(-1.0f, -1.0f);//!左下角坐标 (0.0,0.0)
-	//glTexCoord2f(1.0, 0.0);glVertex2f(1.0f, -1.0f);	//!右下角坐标（1.0,0,0）
-	//glTexCoord2f(1.0, 1.0);glVertex2f(1.0f, 1.0f);	
-	//glEnd();
-	///*glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	//glRasterPos3f(-1.0f,1.0f,0);*/
-	////glPixelZoom((float)1366/(float)nWidth, -(float)768/(float)nHeight);
-	///*glDrawPixels(m_nVideoWidth, m_nVideoHeight,GL_RGB, GL_UNSIGNED_BYTE, m_pVideoData);
-	//glFlush();*/
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, m_id_y);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_nVideoWidth, m_nVideoHeight, 0, GL_RED, GL_UNSIGNED_BYTE, m_pVideoPlane[0]); 
+
+	glUniform1i(m_textureUniformY, 0);    
+	//U
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_id_u);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_nVideoWidth/2, m_nVideoHeight/2, 0, GL_RED, GL_UNSIGNED_BYTE, m_pVideoPlane[1]);       
+	glUniform1i(m_textureUniformU, 1);
+	//V
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_id_v);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_nVideoWidth/2, m_nVideoHeight/2, 0, GL_RED, GL_UNSIGNED_BYTE, m_pVideoPlane[2]);    
+	glUniform1i(m_textureUniformV, 2);   
+
+	// Draw
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// Show
+	glFlush();
 }
 
 
@@ -438,4 +465,209 @@ void ITAVPlayWidget::paintEvent( QPaintEvent *ev )
 		pat.drawImage(rect(),fixedImage);
 	}
 	QGLWidget::paintEvent(ev);
+}
+int ITAVPlayWidget::finiVideo()
+{
+	if(m_pVideoData)
+	{
+		delete[] m_pVideoData;
+		m_pVideoData=NULL;
+	}
+	m_pVideoPlane[0]=NULL;
+	m_pVideoPlane[1]=NULL;
+	m_pVideoPlane[2]=NULL;
+	m_nVideoHeight=0;
+	m_nVideoWidth=0;
+	m_pVideoData=NULL;
+	return 0;
+}
+//Init Shader
+void ITAVPlayWidget::InitShaders()
+{
+	GLint vertCompiled, fragCompiled, linked;
+
+	GLint v, f;
+	const char *vs,*fs;
+	//Shader: step1
+	v = glCreateShader(GL_VERTEX_SHADER);
+	f = glCreateShader(GL_FRAGMENT_SHADER);
+	//Get source code
+	vs = "attribute vec4 vertexIn;\
+		attribute vec2 textureIn;\
+		varying vec2 textureOut;\
+		void main(void)\
+		{\
+		gl_Position = vertexIn; \
+		textureOut = textureIn;\
+		}";
+	fs ="varying vec2 textureOut;\
+		uniform sampler2D tex_y;\
+		uniform sampler2D tex_u;\
+		uniform sampler2D tex_v;\
+		void main(void)\
+		{\
+			vec3 yuv;\
+			vec3 rgb; \
+			yuv.x = texture2D(tex_y, textureOut).r;\
+			yuv.y = texture2D(tex_u, textureOut).r - 0.5;\
+			yuv.z = texture2D(tex_v, textureOut).r - 0.5;\
+			rgb = mat3( 1,       1,         1,\
+				0,       -0.39465,  2.03211,\
+				1.13983, -0.58060,  0) * yuv;    \
+			gl_FragColor = vec4(rgb, 1);\
+		}";
+	//Shader: step2
+	glShaderSource(v, 1, &vs,NULL);
+	glShaderSource(f, 1, &fs,NULL);
+	//Shader: step3
+	glCompileShader(v);
+	//Debug
+	glGetShaderiv(v, GL_COMPILE_STATUS, &vertCompiled);
+	glCompileShader(f);
+	glGetShaderiv(f, GL_COMPILE_STATUS, &fragCompiled);
+
+	//Program: Step1
+	m_program = glCreateProgram(); 
+	//Program: Step2
+	glAttachShader(m_program,v);
+	glAttachShader(m_program,f); 
+
+	glBindAttribLocation(m_program, ATTRIB_VERTEX, "vertexIn");
+	glBindAttribLocation(m_program, ATTRIB_TEXTURE, "textureIn");
+	//Program: Step3
+	glLinkProgram(m_program);
+	//Debug
+	glGetProgramiv(m_program, GL_LINK_STATUS, &linked);  
+	//Program: Step4
+	glUseProgram(m_program);
+
+
+	//Get Uniform Variables Location
+	m_textureUniformY = glGetUniformLocation(m_program, "tex_y");
+	m_textureUniformU = glGetUniformLocation(m_program, "tex_u");
+	m_textureUniformV = glGetUniformLocation(m_program, "tex_v"); 
+
+
+	static const GLfloat vertexVertices[] = {
+		-1.0f, -1.0f,
+		1.0f, -1.0f,
+		-1.0f,  1.0f,
+		1.0f,  1.0f,
+	};    
+
+	static const GLfloat textureVertices[] = {
+		0.0f,  1.0f,
+		1.0f,  1.0f,
+		0.0f,  0.0f,
+		1.0f,  0.0f,
+	}; 
+	//Set Arrays
+	glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, vertexVertices);
+	//Enable it
+	glEnableVertexAttribArray(ATTRIB_VERTEX);    
+	glVertexAttribPointer(ATTRIB_TEXTURE, 2, GL_FLOAT, 0, 0, textureVertices);
+	glEnableVertexAttribArray(ATTRIB_TEXTURE);
+
+
+	//Init Texture
+	glGenTextures(1, &m_id_y); 
+	glBindTexture(GL_TEXTURE_2D, m_id_y);    
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glGenTextures(1, &m_id_u);
+	glBindTexture(GL_TEXTURE_2D, m_id_u);   
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glGenTextures(1, &m_id_v); 
+	glBindTexture(GL_TEXTURE_2D, m_id_v);    
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+}
+
+void ITAVPlayWidget::dragEnterEvent(QDragEnterEvent *eve)
+{
+	//if (eve->mimeData()->hasFormat("text/plain"))
+		eve->acceptProposedAction();
+}
+void ITAVPlayWidget::dropEvent(QDropEvent *eve)
+{
+	QList<QUrl> urls = eve->mimeData()->urls();
+	if(urls.isEmpty())
+		return;
+	closeLastPlay();
+	QUrl firstUrl=urls.first();
+	QString strFilePath=firstUrl.toLocalFile();
+	openDstAVFile(strFilePath);
+}
+//************************************
+//函数名:  openDstAVFile
+//描述：打开指定音视频文件
+//参数：文件路径名
+//返回值：bool
+//时间：2016/4/25 WZQ
+//************************************
+bool ITAVPlayWidget::openDstAVFile(const QString& strFilePath)
+{
+	ITAVCodecCtxFmt fmt;
+	memset(&fmt,0,sizeof(ITAVCodecCtxFmt));
+	fmt.nSrcWidth=480;
+	fmt.nSrcHeight=272;
+	bool bRet=m_pAVStreamPares->openDstAVFile(strFilePath.toStdString().c_str(),&fmt);
+	if(!bRet)
+		return bRet;
+	int64_t pps;
+	int nLen=0;
+	m_bStopPlay=false;
+	if(m_pAVStreamPares->getAudioInitState())
+	{
+#ifdef USE_BUFFERS
+		m_nAudioDataSize=m_pAVStreamPares->getAudioBuffSize();
+		if(m_nAudioDataSize<=0)
+		{
+			m_nAudioDataSize=g_audioBuffSize;//wav大小 最少4096
+		}
+#else 
+		m_nAudioDataSize=m_pAVStreamPares->getAudioFrequency();//m_pAVStreamPares->getAudioChannel()*m_pAVStreamPares->getAudioFrequency();
+		if(m_nAudioDataSize<=4096)
+		{
+			m_nAudioDataSize=44100;
+		}
+#endif
+		
+		initAudio();	
+		playSound();	
+	}
+	if(m_pAVStreamPares->getVideoInitState())
+	{
+		m_nVideoWidth=m_pAVStreamPares->getVideoWidth();
+		m_nVideoHeight=m_pAVStreamPares->getVideoHeight();
+		int ysize=m_nVideoWidth*m_nVideoHeight;
+		if(ysize <= 0)
+		{
+			closeLastPlay();
+			return false;
+		}
+		m_pVideoData=new unsigned char[ysize*3+1];
+		memset(m_pVideoData,0,ysize*3+1);		
+		m_pVideoPlane[0] = m_pVideoData;
+		m_pVideoPlane[1] = m_pVideoPlane[0] + m_nVideoWidth*m_nVideoHeight;
+		m_pVideoPlane[2] = m_pVideoPlane[1] + m_nVideoWidth*m_nVideoHeight/4;
+		m_bPreview=true;		
+		initializeGL();
+	}
+	if(m_pAVStreamPares->getAudioInitState())
+		m_audioThread=QtConcurrent::run(playAudioThread,this);
+	if(m_pAVStreamPares->getVideoInitState())	
+		m_videoThread=QtConcurrent::run(playVideoThread,this);	
+	
+	return true;
 }

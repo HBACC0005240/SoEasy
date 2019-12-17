@@ -3,21 +3,21 @@
 #include <QtWidgets/QApplication>
 #include "DbgHelp.h"
 #include <windows.h>
-
-//ANSI转化成UNICODE
-LPWSTR ANSITOUNICODE(const char* pBuf)
-{
-	int lenA = lstrlenA(pBuf);
-	int lenW=0;
-	LPWSTR lpszFile;
-	lenW = MultiByteToWideChar(CP_ACP,0,pBuf,lenA,0,0);	
-	if(lenW > 0)
-	{
-		lpszFile = SysAllocStringLen(0,lenW);	//申请一个指定字符长度的 BSTR 指针，并初始化为一个字符串
-		MultiByteToWideChar(CP_ACP,0,pBuf,lenA,lpszFile,lenW);	//
-	}
-	return lpszFile;
-} 
+//
+////ANSI转化成UNICODE
+//LPWSTR ANSITOUNICODE(const char* pBuf)
+//{
+//	int lenA = lstrlenA(pBuf);
+//	int lenW=0;
+//	LPWSTR lpszFile;
+//	lenW = MultiByteToWideChar(CP_ACP,0,pBuf,lenA,0,0);	
+//	if(lenW > 0)
+//	{
+//		lpszFile = SysAllocStringLen(0,lenW);	//申请一个指定字符长度的 BSTR 指针，并初始化为一个字符串
+//		MultiByteToWideChar(CP_ACP,0,pBuf,lenA,lpszFile,lenW);	//
+//	}
+//	return lpszFile;
+//} 
 typedef	BOOL (WINAPI * MINIDUMP_WRITE_DUMP)(
 	IN HANDLE			hProcess,
 	IN DWORD			ProcessId,

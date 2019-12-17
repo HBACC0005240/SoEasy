@@ -28,6 +28,7 @@ extern "C"
 #endif
 #include "Global_ErrorNo.h"
 #include "Global_Define.h"
+#include "Global_Fun.h"
 
 
 typedef struct PacketQueue {
@@ -44,22 +45,28 @@ public:
 	ITAVStreamParse(void);
 	~ITAVStreamParse(void);
 
-	bool openDstAVFile(const char* strPath);
+	bool openDstAVFile(const char* strPath,ITAVCodecCtxFmt* pFmt=NULL);
 	bool getNextNalData(int64_t& pts,unsigned char** strData,int& nLen);
 	bool getNextAudioData(int64_t& pts,unsigned char** pData,int& nLen);
-	bool getNextYuvData(int64_t& pts,unsigned char** pData,int& nLen,int& nWidth,int& nHeight);
+	bool getNextYuvData(int64_t& pts,unsigned char** pData,int& nLen,int& nWidth,int& nHeight,int& nSynVal);
 	bool getNextPcmData(int64_t& pts,unsigned char** pData,int& nLen);
 	bool isAudioBuffEmpty();
+	bool isVideoBuffEmpty();
 	bool closeDstAVFile();
 
 	///audio info
+	bool getAudioInitState(){return m_pACodecCtx?true:false;}
 	int getAudioFrequency(){return m_nAudioSampleRate;}
 	int getAudioChannel(){return m_nAudioChannels;}
 	int getAudioBitRate(){return m_nAudioBitRate;}
+	double getAudioClock(){return m_dAudioClock;}
+	int getAudioBuffSize();
 
 	///Video info
+	bool getVideoInitState(){return m_pVCodecCtx?true:false;}
 	int getVideoWidth(){return m_nVideoWidth;}
 	int getVideoHeight(){return m_nVideoHeight;}
+	double getVideoClock(){return m_dVideoClock;}
 protected:
 	static void read_thread(void *arg);	
 	void packet_queue_init(PacketQueue *q);
@@ -76,6 +83,8 @@ private:
 	AVCodec*		m_pVCodec;		//视频编码器
 	AVCodec*		m_pACodec;		//音频编码器
 	AVCodecContext*	m_pACodecCtx;	//音频Ctx
+	AVStream*		m_pVideoStream;
+	AVStream*		m_pAudioStream;
 	int				m_nTotalSecond;	//总秒数
 	SwsContext*		m_pVConvertCtx;	//视频转换
 	SwrContext*		m_pAConvertCtx;	//音频转换
@@ -112,12 +121,13 @@ private:
 	double  m_dAudioClock;			///音频pts转换后的时钟
 	//	int		m_nAudioSamples;	///音频采样数	
 	//	bool	m_bFirstGetNal;		///第一次读取nal数据  返回sps+pps
-	bool	m_bAudioBuffEmpty;
-
+	bool	m_bAudioBuffEmpty;		//音频数据是否已读取完毕
+	bool	m_bVideoBuffEmpty;		///视频数据是否已读取完毕
 	//video
 	uint8_t* m_pVideoConvertBuf;	///视频转换buff
 	int		m_nVideoConvertBufSize;	///视频转换缓冲区大小
 	int		m_nVideoWidth;
 	int		m_nVideoHeight;
+	double	m_dVideoClock;		///视频时钟
 };
 

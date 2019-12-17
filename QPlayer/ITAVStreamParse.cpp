@@ -13,6 +13,8 @@ ITAVStreamParse::ITAVStreamParse(void)
 	m_nAStreamIndex = -1;
 	m_pVCodecCtx = NULL;
 	m_pVCodec = NULL;
+	m_pACodecCtx=NULL;
+	m_pACodec=NULL;
 	m_nTotalSecond = 0;
 	m_pH264PPS = NULL;
 	m_pH264SPS = NULL;
@@ -51,8 +53,11 @@ ITAVStreamParse::ITAVStreamParse(void)
 	m_nAudioConvertBufSize=0;
 	m_dAudioClock=0;
 	m_bAudioBuffEmpty=false;
+	m_bVideoBuffEmpty=false;
 	m_pVideoConvertBuf=NULL;
 	m_nVideoConvertBufSize=0;
+	m_pAudioStream=NULL;
+	m_pVideoStream=NULL;
 }
 
 
@@ -60,7 +65,7 @@ ITAVStreamParse::~ITAVStreamParse(void)
 {
 }
 
-bool ITAVStreamParse::openDstAVFile(const char* strPath)
+bool ITAVStreamParse::openDstAVFile(const char* strPath,ITAVCodecCtxFmt* pFmt)
 {
 	m_bCloseReadThread=false;
 	m_pAudioConvertBuf=false;
@@ -77,7 +82,8 @@ bool ITAVStreamParse::openDstAVFile(const char* strPath)
 		return false;
 	}
 	err = avformat_find_stream_info(m_pFormatCtx, NULL);
-	if (err < 0) {
+	if (err < 0 && !pFmt)	//如果没找到信息，并且没传入所需数据，则退出
+	{
 		av_log(NULL, AV_LOG_WARNING,"%s: could not find codec parameters\n", m_pFormatCtx->filename);
 		avformat_free_context(m_pFormatCtx);
 		m_pFormatCtx = NULL;
@@ -103,9 +109,15 @@ bool ITAVStreamParse::openDstAVFile(const char* strPath)
 		return false;
 	}
 	if(m_nVStreamIndex != -1)
-		m_pVCodecCtx=m_pFormatCtx->streams[m_nVStreamIndex]->codec;
+	{
+		m_pVCodecCtx=m_pFormatCtx->streams[m_nVStreamIndex]->codec;		
+		m_pVideoStream=m_pFormatCtx->streams[m_nVStreamIndex];
+	}
 	if(m_nAStreamIndex != -1)
+	{
 		m_pACodecCtx =m_pFormatCtx->streams[m_nAStreamIndex]->codec;
+		m_pAudioStream=m_pFormatCtx->streams[m_nAStreamIndex];;
+	}
 	if(m_pACodecCtx)
 	{
 		m_nAudioSampleRate = m_pACodecCtx->sample_rate;
@@ -125,6 +137,14 @@ bool ITAVStreamParse::openDstAVFile(const char* strPath)
 				m_pVCodecCtx = NULL;
 				return false;
 			}	
+			if(m_pVCodecCtx->width <= 0 && pFmt)
+			{
+				m_pVCodecCtx->width=pFmt->nSrcWidth;
+			}
+			if(m_pVCodecCtx->height <= 0 && pFmt)
+			{
+				m_pVCodecCtx->height=pFmt->nSrcHeight;
+			}
 			m_pVConvertCtx = sws_getContext(m_pVCodecCtx->width, m_pVCodecCtx->height, m_pVCodecCtx->pix_fmt, 
 				m_pVCodecCtx->width, m_pVCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL); 
 			m_nVideoWidth=m_pVCodecCtx->width;
@@ -188,6 +208,26 @@ bool ITAVStreamParse::openDstAVFile(const char* strPath)
 				return false;
 			}	
 		}
+		if(!m_pAConvertCtx)
+		{
+			m_pAConvertCtx = swr_alloc();
+			int64_t out_channel_layout = av_get_default_channel_layout(m_nAudioChannels);
+			AVSampleFormat out_sample_fmt=AV_SAMPLE_FMT_S16;	
+			int64_t in_channel_layout=av_get_default_channel_layout(m_nAudioChannels);///通道原样输出，最佳为根据硬件选择 
+			m_pAConvertCtx=swr_alloc_set_opts(m_pAConvertCtx,out_channel_layout, out_sample_fmt, 44100,
+				in_channel_layout,m_pACodecCtx->sample_fmt , m_pACodecCtx->sample_rate,0, NULL);
+			swr_init(m_pAConvertCtx);	
+		}
+		/*if(!m_pAudioConvertBuf)
+		{
+			AVSampleFormat out_sample_fmt=AV_SAMPLE_FMT_S16;	///AAC一般采样位1024
+			int dst_nb_samples=1024;								
+			dst_nb_samples = av_rescale_rnd(1024, 44100,m_nAudioSampleRate, AV_ROUND_UP);
+			m_nAudioConvertBufSize=av_samples_get_buffer_size(NULL,m_nAudioChannels ,dst_nb_samples,out_sample_fmt, 1);	
+			m_pAudioConvertBuf=(uint8_t *)av_malloc(m_nAudioConvertBufSize);				
+			memset(m_pAudioConvertBuf,0,m_nAudioConvertBufSize);
+			
+		}*/
 	}		
 	int dummy_size;  		
 	m_pReadThread = new ITThread("读取线程");
@@ -529,9 +569,12 @@ bool ITAVStreamParse::closeDstAVFile()
 	}
 	if(m_pFormatCtx)
 	{
+		avcodec_close(m_pACodecCtx);
+		avcodec_close(m_pVCodecCtx);
+		avformat_close_input(&m_pFormatCtx);  
 		avformat_free_context(m_pFormatCtx);
 		m_pFormatCtx = NULL;
-	}		
+	}			
 	m_pVCodecCtx = NULL;
 	m_pVCodec = NULL;
 	av_bitstream_filter_close(m_pVBitStreamFilterCtx);     
@@ -562,9 +605,11 @@ bool ITAVStreamParse::closeDstAVFile()
 		m_pAudioConvertBuf=NULL;
 		m_nAudioConvertBufSize=0;
 	}
+	m_pAudioStream=NULL;
+	m_pVideoStream=NULL;
 	return true;
 }
-bool ITAVStreamParse::getNextYuvData(int64_t& pts,unsigned char** pData,int& nLen,int& nWidth,int& nHeight)
+bool ITAVStreamParse::getNextYuvData(int64_t& pts,unsigned char** pData,int& nLen,int& nWidth,int& nHeight,int& nSynVal)
 {
 	AVPacket vPacket = { 0 };
 	if(!packet_queue_get(m_pVideoPacketQueue,&vPacket) && m_bReadFrameEnd)
@@ -594,14 +639,40 @@ bool ITAVStreamParse::getNextYuvData(int64_t& pts,unsigned char** pData,int& nLe
 				sws_scale(m_pVConvertCtx, (const uint8_t* const*)pVFrame->data, pVFrame->linesize, 0, m_pVCodecCtx->height, 
 					pFrameYUV->data, pFrameYUV->linesize);		
 				pVFrame->pts = av_frame_get_best_effort_timestamp(pVFrame);	
-				AVRational frame_rate = m_pVCodecCtx->framerate;
-				AVRational tb = m_pVCodecCtx->time_base;				
+				///直接使用pVCodecCtx会有误差，感觉像是打包pts出的问题？  使用下面这个基本就可以了
+				AVRational frame_rate = av_guess_frame_rate(m_pFormatCtx, m_pVideoStream, NULL);//m_pVCodecCtx->framerate;
+				if(frame_rate.num<1)
+					frame_rate.num=25;
+				if(frame_rate.den<1)
+					frame_rate.den=1;
+					
+				AVRational tb =m_pVideoStream->time_base;//m_pVCodecCtx->time_base;				
 				AVRational framerator;
 				framerator.num = frame_rate.den;
 				framerator.den = frame_rate.num;
 				//此帧持续时间
 				double duration = (frame_rate.num && frame_rate.den ? av_q2d(framerator) : 0);		
-				double pts = (pVFrame->pts == AV_NOPTS_VALUE) ? NAN : pVFrame->pts * av_q2d(tb);	
+				m_dVideoClock = (pVFrame->pts == AV_NOPTS_VALUE) ? NAN : pVFrame->pts * av_q2d(tb);
+				///计算sleep时间
+				double delay = duration;		
+				double diff = m_dVideoClock - m_dAudioClock;	
+				double max_frame_duration = 3600.0;
+				double sync_threshold = FFMAX(0.04, FFMIN(0.1, delay));
+				if (!isnan(diff) && fabs(diff) < max_frame_duration)
+				{
+					if (diff <= -sync_threshold)	//判断音频和视频差值 <= 视频慢了 需要快速播放 
+						delay = FFMAX(0, delay + diff);	//取最大值
+					else if (diff >= sync_threshold && delay > 0.1)	//视频快了 需要快速播放
+						delay = delay + diff;
+					else if (diff >= sync_threshold)	
+						delay = 2 * delay;
+				}
+				delay = delay*1000;
+				if(delay > 0 && delay < 1000000)
+					nSynVal=delay;
+				else
+					nSynVal=10;
+
 				nWidth = m_pVCodecCtx->width;
 				nHeight= m_pVCodecCtx->height;
 				int nYsize=nWidth*nHeight;
@@ -611,8 +682,7 @@ bool ITAVStreamParse::getNextYuvData(int64_t& pts,unsigned char** pData,int& nLe
 				memmove(pTempData+nYsize,(unsigned char*)pFrameYUV->data[1],nYsize/4);
 				memmove(pTempData+nYsize+nYsize/4,(unsigned char*)pFrameYUV->data[2],nYsize/4);
 				*pData=pTempData;
-				nLen=nYsize*3/2;
-
+				nLen=nYsize*3/2;				
 				//AVRational tb; 	
 				//tb.num = 1;
 				//tb.den = pAFrame->sample_rate;
@@ -627,7 +697,8 @@ bool ITAVStreamParse::getNextYuvData(int64_t& pts,unsigned char** pData,int& nLe
 				//if (pAFrame->pts != AV_NOPTS_VALUE)
 				//	m_dAudioClock = pAFrame->pts * av_q2d(tb) + (double) pAFrame->nb_samples / pAFrame->sample_rate;
 				//else
-				//	m_dAudioClock = NAN;				
+				//	m_dAudioClock = NAN;	
+
 			}					
 		}
 		av_frame_free(&pVFrame);
@@ -690,8 +761,8 @@ bool ITAVStreamParse::getNextPcmData(int64_t& pts,unsigned char** pData,int& nLe
 					m_pACodecCtx->time_base.den  = tb.den;
 				if (pAFrame->pts != AV_NOPTS_VALUE)	//判断是否成功解码获取了Pts，如果获取到了，重新以avcodecctx基准和当前帧率做的rationa获取pts
 					pAFrame->pts = av_rescale_q(pAFrame->pts, m_pACodecCtx->time_base, tb);
-				else if (pAFrame->pkt_pts != AV_NOPTS_VALUE)	//如果解码帧没有，判断包中是否携带，如果携带，以包的pts和流的基准重新获取pts
-					pAFrame->pts = av_rescale_q(pAFrame->pkt_pts, m_pACodecCtx->time_base, tb);
+				else if (pAFrame->pkt_pts != AV_NOPTS_VALUE && m_pAudioStream)	//如果解码帧没有，判断包中是否携带，如果携带，以包的pts和流的基准重新获取pts
+					pAFrame->pts = av_rescale_q(pAFrame->pkt_pts, m_pAudioStream->time_base, tb);
 
 				pts = pAFrame->pts;
 				if (pAFrame->pts != AV_NOPTS_VALUE)
@@ -713,4 +784,27 @@ bool ITAVStreamParse::isAudioBuffEmpty()
 {
 	m_pAudioPacketQueue->nb_packets <= 0 ? m_bAudioBuffEmpty=true : m_bAudioBuffEmpty=false;		
 	return m_bAudioBuffEmpty;
+}
+bool ITAVStreamParse::isVideoBuffEmpty()
+{
+	m_pVideoPacketQueue->nb_packets <= 0 ? m_bVideoBuffEmpty=true : m_bVideoBuffEmpty=false;		
+	return m_bVideoBuffEmpty;
+}
+//************************************
+//函数名:  getAudioBuffSize
+//描述：获取每帧音频数据大小
+//参数：无
+//返回值：int
+//时间：2016/4/25 WZQ
+//************************************
+int ITAVStreamParse::getAudioBuffSize()
+{
+	int nAudioBuffSize=0;
+	if(!m_pACodecCtx)
+		return 0;
+	AVSampleFormat out_sample_fmt=AV_SAMPLE_FMT_S16;	///AAC一般采样位1024
+	int dst_nb_samples=1024;								
+	dst_nb_samples = av_rescale_rnd(m_pACodecCtx->frame_size, 44100,m_nAudioSampleRate, AV_ROUND_UP);
+	nAudioBuffSize=av_samples_get_buffer_size(NULL,m_nAudioChannels ,dst_nb_samples,out_sample_fmt, 1);	
+	return nAudioBuffSize;
 }

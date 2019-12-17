@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoEasy", "SoEasy.vcxproj", "{3DCEC453-779F-4AC5-A809-98B00E573334}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QPlayer", "..\QPlayer\QPlayer.vcxproj", "{98495C71-35FB-4FE3-BB2C-6EA194897811}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DCEC453-779F-4AC5-A809-98B00E573334}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DCEC453-779F-4AC5-A809-98B00E573334}.Debug|Win32.Build.0 = Debug|Win32
+		{3DCEC453-779F-4AC5-A809-98B00E573334}.Release|Win32.ActiveCfg = Release|Win32
+		{3DCEC453-779F-4AC5-A809-98B00E573334}.Release|Win32.Build.0 = Release|Win32
+		{98495C71-35FB-4FE3-BB2C-6EA194897811}.Debug|Win32.ActiveCfg = Debug|Win32
+		{98495C71-35FB-4FE3-BB2C-6EA194897811}.Debug|Win32.Build.0 = Debug|Win32
+		{98495C71-35FB-4FE3-BB2C-6EA194897811}.Release|Win32.ActiveCfg = Release|Win32
+		{98495C71-35FB-4FE3-BB2C-6EA194897811}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

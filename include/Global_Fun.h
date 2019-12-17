@@ -1,6 +1,56 @@
 #pragma once
 #include "Global_Define.h"
 #include <windows.h>
+
+static int isnan(float x)
+{
+	uint32_t v = av_float2int(x);
+	if ((v & 0x7f800000) != 0x7f800000)
+		return 0;
+	return v & 0x007fffff;
+}
+static inline unsigned char CONVERT_ADJUST(double tmp)
+{
+	return (unsigned char)((tmp >= 0 && tmp <= 255)?tmp:(tmp < 0 ? 0 : 255));
+}
+//YUV420P to RGB24
+static void CONVERT_YUV420PtoRGB24(unsigned char* yuv_src,unsigned char* rgb_dst,int nWidth,int nHeight)
+{
+	unsigned char *tmpbuf=(unsigned char *)malloc(nWidth*nHeight*3);
+	unsigned char Y,U,V,R,G,B;
+	unsigned char* y_planar,*u_planar,*v_planar;
+	int rgb_width , u_width;
+	rgb_width = nWidth * 3;
+	u_width = (nWidth >> 1);
+	int ypSize = nWidth * nHeight;
+	int upSize = (ypSize>>2);
+	int offSet = 0;
+
+	y_planar = yuv_src;
+	u_planar = yuv_src + ypSize;
+	v_planar = u_planar + upSize;
+
+	for(int i = 0; i < nHeight; i++)
+	{
+		for(int j = 0; j < nWidth; j ++)
+		{
+			Y = *(y_planar + nWidth * i + j);
+			offSet = (i>>1) * (u_width) + (j>>1);
+			V = *(u_planar + offSet);
+			U = *(v_planar + offSet);
+
+			R = CONVERT_ADJUST((Y + (1.4075 * (V - 128))));
+			G = CONVERT_ADJUST((Y - (0.3455 * (U - 128) - 0.7169 * (V - 128))));
+			B = CONVERT_ADJUST((Y + (1.7790 * (U - 128))));			
+			offSet = rgb_width * i + j * 3;
+
+			rgb_dst[offSet] = B;
+			rgb_dst[offSet + 1] = G;
+			rgb_dst[offSet + 2] = R;
+		}
+	}
+	free(tmpbuf);
+}
 static AVCodecID TranslationCodecID(int nID)
 {
 	AVCodecID avcodecid=AV_CODEC_ID_NONE;
