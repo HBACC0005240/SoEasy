@@ -77,9 +77,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SoEasy.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="icon1.ico" />
     <None Include="icon2.ico" />
   </ItemGroup>
