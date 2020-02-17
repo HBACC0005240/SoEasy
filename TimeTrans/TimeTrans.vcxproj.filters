@@ -76,7 +76,4 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="TimeTrans.rc" />
-  </ItemGroup>
 </Project>

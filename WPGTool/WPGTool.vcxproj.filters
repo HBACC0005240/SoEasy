@@ -143,9 +143,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="WPGTool.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\passingThrough.ico" />
   </ItemGroup>
 </Project>
