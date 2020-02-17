@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h"
+#include <windows.h>
 //ANSI×ª»¯³ÉUNICODE
 static LPWSTR ANSITOUNICODE1(const char* pBuf)
 {

@@ -33,6 +33,9 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="qxtglobalshortcut5">
+      <UniqueIdentifier>{bacc8c73-6077-4e09-840a-2fa767c382b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,6 +56,45 @@
     <ClCompile Include="GeneratedFiles\qrc_WPGTool.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\ITHotKeyProxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ITHotKeyProxy.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ITHotKeyProxy.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qxtglobalshortcut.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qxtglobalshortcut.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="YunLai.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -62,6 +104,24 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="YunLai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,6 +134,12 @@
     </CustomBuild>
     <CustomBuild Include="WPGTool.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\include\ITHotKeyProxy.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
+      <Filter>qxtglobalshortcut5</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
