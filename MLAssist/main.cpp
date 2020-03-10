@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 #include <QTextCodec>
 #include <QDebug>
+#include "GameCtrl.h"
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -10,7 +11,7 @@ int main(int argc, char *argv[])
 #else
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 #endif
-
+	g_pGameCtrl;
 	MLAssist w;
 	w.show();
 	return a.exec();

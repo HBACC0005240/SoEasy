@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CppWindowsHook">
+</Property><Property Name="解决方案文件" Value="E:\WorkData\c++\project\hook\CppWindowsHook.sln">
+</Property><Property Name="Date" Value="2012年1月1日">
+</Property><Property Name="Time" Value="10:36">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="CppWindowsHook.sln" Description="文件已成功备份为 E:\WorkData\c++\project\hook\CppWindowsHook.sln.old">
+</Event><Event ErrorLevel="0" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="Converting project file 'E:\WorkData\c++\project\hook\CppWindowsHook\CppWindowsHook.vcproj'.">
+</Event><Event ErrorLevel="1" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="Attribute 'CopyLocalDependencies' of 'ProjectReference' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="1" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="Attribute 'UseDependenciesInBuild' of 'ProjectReference' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="0" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="Done converting to new project file 'E:\WorkData\c++\project\hook\CppWindowsHook\CppWindowsHook.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="CppWindowsHook" Source="CppWindowsHook\CppWindowsHook.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="CppHookDll" Source="CppHookDll\CppHookDll.vcproj" Description="Converting project file 'E:\WorkData\c++\project\hook\CppHookDll\CppHookDll.vcproj'.">
+</Event><Event ErrorLevel="1" Project="CppHookDll" Source="CppHookDll\CppHookDll.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="CppHookDll" Source="CppHookDll\CppHookDll.vcproj" Description="Done converting to new project file 'E:\WorkData\c++\project\hook\CppHookDll\CppHookDll.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="CppHookDll" Source="CppHookDll\CppHookDll.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CppWindowsHook.sln" Description="成功转换解决方案">
+</Event><Event ErrorLevel="3" Project="" Source="CppWindowsHook.sln" Description="Converted">
+</Event></UpgradeLog>

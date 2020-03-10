@@ -6,45 +6,86 @@
 #include "../include/ITPublic.h"
 #include <math.h>
 #include <QtConcurrent> 
+#include <QMessageBox>
+#include "../include/qxtglobalshortcut5/QxtGlobalShortcut.h"
+#include "FZParseScript.h"
+#include "GameData.h"
 MLAssist::MLAssist(QWidget *parent)
-	: QDialog(parent)
+	: QWidget(parent)
 {
 	ui.setupUi(this);
+	m_KeyStart = 0;
+	m_KeyStop = 1;
 	m_gameHwnd = nullptr;
 	m_gameProcessID = 0;
 	m_autoBattle = false;
-	ui.tableWidget->setRowCount(10);
-	for (int i=0;i<10;++i)
-	{
-		for (size_t n = 0; n < 5; n++)
-		{
-			QTableWidgetItem* pItem = new QTableWidgetItem();
-			ui.tableWidget->setItem(i, n, pItem);
-		}		
-	}
-	ui.tableWidget->horizontalHeader()->setStyleSheet("font:bold;");
-//	ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	ui.tableWidget->verticalHeader()->setVisible(false);
-//	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	ui.tableWidget->horizontalHeader()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-	ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-	ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
-//	ui.tableWidget->horizontalHeader()->setFixedHeight(30);
-	ui.tableWidget->setColumnWidth(1,130);
-//	ui.tableWidget->resizeColumnsToContents();//根据内容调整列宽 但每次都变 太麻烦 修改下
-	memset(m_Infos, 0, sizeof(PERSONINFO) * 20);
+	m_screenHDC = GetDC(nullptr);
+	
 	initPersonPos();
 	connect(&m_getBattleTimer,SIGNAL(timeout()),this,SLOT(doUpdateBattleInfo()));
 	connect(this, SIGNAL(signal_autoBattle()), this, SLOT(on_autoBattle()));
+//	initComboBox();
 }
 
 MLAssist::~MLAssist()
 {
 	m_getBattleTimer.stop();
 }
+//
+//void MLAssist::initComboBox()
+//{
+//	for (int i = 0; i < 11; ++i)
+//	{
+//		QString szItem = QString("F%1").arg(i + 1);
+//		ui.comboBox_start->addItem(szItem, i);
+//		ui.comboBox_stop->addItem(szItem, i);
+//	}
+//	ui.comboBox_start->setCurrentIndex(m_KeyStart);
+//	ui.comboBox_stop->setCurrentIndex(m_KeyStop);
+//	ui.comboBox_start->removeItem(m_KeyStop);
+//	ui.comboBox_stop->removeItem(m_KeyStart);
+//	
+//	QxtGlobalShortcut *shortcut = new QxtGlobalShortcut(this);
+//	if (shortcut)
+//	{
+//		if (shortcut->setShortcut(QKeySequence(ui.comboBox_start->currentText()), (HWND)NULL) == FALSE)
+//		{
+//			QMessageBox::information(this, "提示", "注册启动热键失败", QMessageBox::Ok);
+//		}
+//		connect(shortcut, SIGNAL(activated(const QKeySequence&)), this, SLOT(dealHotKeyEvent(const QKeySequence&)));
+//	}
+//	QxtGlobalShortcut *shortcut2 = new QxtGlobalShortcut(this);
+//	if (shortcut2)
+//	{
+//		if (shortcut2->setShortcut(QKeySequence(ui.comboBox_stop->currentText()), (HWND)NULL) == FALSE)
+//		{
+//			QMessageBox::information(this, "提示", "注册停止热键失败", QMessageBox::Ok);
+//		}
+//		connect(shortcut2, SIGNAL(activated(const QKeySequence&)), this, SLOT(dealHotKeyEvent(const QKeySequence&)));
+//	}
+//}
+//void MLAssist::dealHotKeyEvent(const QKeySequence& key)
+//{
+//	if (key == QKeySequence(ui.comboBox_start->currentText()))
+//	{
+//		//开始同步
+//		ui.checkBox_autoBattle->setChecked(true);
+//		on_checkBox_autoBattle_clicked();
+//	}
+//	else if (key == QKeySequence(ui.comboBox_stop->currentText()))
+//	{
+//		//停止同步
+//		ui.checkBox_autoBattle->setChecked(false);
+//		on_checkBox_autoBattle_clicked();
+//	}
+//}
 
 void MLAssist::initPersonPos()
 {
+	pointYes.x = 245;
+	pointYes.y = 317;
+	pointNo.x = 385;
+	pointNo.y = 317;
 	pointEscape.x = 600;
 	pointEscape.y = 50;
 	pointAttack.x = 411;
@@ -145,6 +186,8 @@ void MLAssist::refreshBattleUI()
 void MLAssist::readBattleInfo()
 {
 	char* pText = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "0x005590E0", 1000);//0x005590E4
+	if (strlen(pText) < 1)
+		return;
 	LPWSTR wText = ANSITOUNICODE1(pText);
 	QString szBattleInfo = QString::fromStdWString(wText);// YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "0x005590E0", 1000));
 	QStringList szBattleInfoList = szBattleInfo.split("|");//11个为一组战斗信息
@@ -164,32 +207,16 @@ void MLAssist::readBattleInfo()
 	}
 }
 
-void MLAssist::setLoginUser(const QString& szText)
-{
-	QTableWidgetItem* pItem = ui.tableWidget->item(0, 0);
-	pItem->setText(szText);
-}
-
-void MLAssist::setItemText(int row, int col, const QString& szText)
-{
-	QTableWidgetItem* pItem = ui.tableWidget->item(row, col);
-	pItem->setText(szText);
-}
-
 void MLAssist::on_autoBattle()
 {
-	QtConcurrent::run(AttackThread, this);
+//	QtConcurrent::run(AttackThread, this);
 }
 
-void MLAssist::on_pushButton_move_clicked()
-{
-	int x = ui.lineEdit_x->text().toInt();
-	int y = ui.lineEdit_y->text().toInt();
-	MoveToGamePoint(x, y,10,100);
-}
 
 void MLAssist::on_pushButton_up_clicked()
 {
+	faceToDirection(MOVE_DIRECTION_UP);
+	return;
 	POINT points;
 	long resX = 320;
 	long resY = 240 - MOVE_STEP_DIAGONAL;
@@ -205,6 +232,8 @@ void MLAssist::on_pushButton_up_clicked()
 
 void MLAssist::on_pushButton_down_clicked()
 {
+	faceToDirection(MOVE_DIRECTION_DOWN);
+	return;
 	POINT points;
 	long resX = 320;
 	long resY = 240 + MOVE_STEP_DIAGONAL;  //考虑边界 坐标是一个32宽像素的方框 
@@ -220,6 +249,8 @@ void MLAssist::on_pushButton_down_clicked()
 
 void MLAssist::on_pushButton_left_clicked()
 {
+	faceToDirection(MOVE_DIRECTION_LEFT);
+	return;
 	POINT points;
 	long resX = 320- MOVE_STEP_DIAGONAL;
 	long resY = 240;
@@ -235,6 +266,8 @@ void MLAssist::on_pushButton_left_clicked()
 
 void MLAssist::on_pushButton_right_clicked()
 {
+	faceToDirection(MOVE_DIRECTION_RIGHT);
+	return;
 	POINT points;
 	long resX = 320+ MOVE_STEP_DIAGONAL;
 	long resY = 240;
@@ -248,145 +281,12 @@ void MLAssist::on_pushButton_right_clicked()
 	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 }
 
-void MLAssist::on_pushButton_color_clicked()
-{
-	COLORREF tempc = GetPixel(m_gameHDC, 340, 240);// 486, 130);
 
-	COLORREF crTemp = GetPixel(m_gameHDC, 310, 212);// 356, 27);
-	BYTE pixelR = GetRValue(crTemp);
-	BYTE pixelG = GetGValue(crTemp);
-	BYTE pixelB = GetBValue(crTemp);
 
-	ui.label_color->setText(QString::number(crTemp));
-	QPalette palette;
-	palette.setColor(QPalette::Background, QColor(pixelR, pixelG, pixelB));
-//	ui.label_color->setPalette(QString("background-color:%1").arg(QColor(tempc)));
-}
-
-void MLAssist::on_pushButton_clicked()
-{
-	ui.comboBox->clear();
-	QMap<qint64, QString> processData;
-	YunLai::GetAllProcess(processData);
-	for (auto it = processData.begin(); it != processData.end(); ++it)
-	{
-		if(it.value().contains("qfmoli"))	
-			ui.comboBox->addItem(QString("%1 %2").arg(it.key()).arg(it.value()),it.key());
-	}
-}
-
-void MLAssist::on_pushButton_hook_clicked()
-{
-	m_gameProcessID = ui.comboBox->currentData(Qt::UserRole).toInt();
-	m_gameHwnd = YunLai::FindMainWindow(m_gameProcessID);
-	m_gameHDC = GetDC(m_gameHwnd);
-	QString szLoginUser = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "00E39EE4",100);
-	QString szGameUserName = QString::fromWCharArray(ANSITOUNICODE1(YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "00E35878", 100)));
-	QString szMapName = QString::fromWCharArray(ANSITOUNICODE1(YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "009181C0", 100)));
-
-	
-	int nEast = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD28");
-	int nSouth = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD30");
-	setItemText(0,0, szLoginUser);
-	setItemText(1, 0, szGameUserName);
-	setItemText(2, 0, szMapName);
-	setItemText(3, 0, QString("东%1 南%2").arg(nEast).arg(nSouth));
-	setItemText(4, 0, QString("连接有效"));
-	int nHP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A418");
-	int nTotHP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A41C");
-	int nMP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A420");
-	int nTotMP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A424");
-	QString szHp = QString("HP:%1/%2").arg(nHP).arg(nTotHP);
-	QString szMp = QString("MP:%1/%2").arg(nMP).arg(nTotMP);
-	qDebug() << szHp << szMp;
-	setItemText(0, 1, szHp);
-	setItemText(1, 1, szMp);
-	//	qDebug() << m_gameProcessID << m_gameHwnd << szEast;
-	//获取升级经验 
-	int nExperience = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A438");
-	int nNextExperience = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A43C");
-	setItemText(2, 1, QString("升:%1").arg(nNextExperience-nExperience));
-	int nAttack = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A460");
-	setItemText(3, 1, QString("力:%1").arg(nAttack));
-	int nDefence = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A464");
-	setItemText(4, 1, QString("防:%1").arg(nDefence));
-	int nAgility = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A468");
-	setItemText(5, 1, QString("敏:%1").arg(nAgility));
-	int nMind = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A46C");
-	setItemText(6, 1, QString("精:%1").arg(nMind));
-	int nCharm = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A474");
-	setItemText(7, 1, QString("魅:%1").arg(nCharm));
-
-	int nEarth = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A4A4");
-	int nWater = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A4A8");
-	int nFire = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A4AC");
-	int nWind = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A4B0");
-	QString szAttribute = "属:";
-	if(nEarth>0)
-		szAttribute += QString(" 地%1").arg(nEarth);
-	if (nWater > 0)
-		szAttribute += QString(" 水%1").arg(nWater);
-	if (nFire > 0)
-		szAttribute += QString(" 火%1").arg(nFire);
-	if (nWind > 0)
-		szAttribute += QString(" 风%1").arg(nWind);
-	setItemText(8, 1, szAttribute);	
-	int nGold = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A4BC");
-	setItemText(9, 1, QString("钱:%1").arg(nGold));
-
-	char* skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "00D84FEC",100);
-	QString qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(0, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "00D899E8", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(1, 2, qSkill);	
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "D8E3E4", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(2, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "D92DE0", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(3, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "D977DC", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(4, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "D9C1D8", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(5, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "DA0BD4", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(6, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "DA55D0", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(7, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "DA9FCC", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(8, 2, qSkill);
-	skill = YunLai::ReadMemoryStrFromProcessID(m_gameProcessID, "DAE9C8", 100);
-	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(9, 2, qSkill);
-	m_getBattleTimer.start(2000);	//2秒获取一次战斗信息
-
-}
-
-void MLAssist::doUpdateBattleInfo()
-{
-	int nEast = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD28");
-	int nSouth = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD30");
-	setItemText(3, 0, QString("东%1 南%2").arg(nEast).arg(nSouth));
-	qDebug() << "更新战斗";
-	memset(m_Infos, 0, sizeof(PERSONINFO) * 20);
-	readBattleInfo();
-	refreshBattleUI();
-	POINT pi;
-	::GetCursorPos(&pi);
-	::ScreenToClient(m_gameHwnd, &pi);
-	qDebug() << pi.x << pi.y << m_lastPoint.x << m_lastPoint.y << (m_lastPoint.x-pi.x) << (m_lastPoint.y-pi.y);
-	m_lastPoint = pi;
-}
 
 void MLAssist::on_checkBox_autoBattle_clicked()
 {
-	m_autoBattle = ui.checkBox_autoBattle->isChecked();
+//	m_autoBattle = ui.checkBox_autoBattle->isChecked();
 	if (m_autoBattle)
 	{
 		emit signal_autoBattle();
@@ -629,6 +529,55 @@ void MLAssist::MoveToGamePoint2(int gameX, int gameY, long stampTime/*=0*/, long
 	}
 	//	Sleep(stampTime);
 }
+
+void MLAssist::faceToDirection(int direction)
+{
+	POINT points;
+	long resX = 320;
+	long resY = 240;// -MOVE_STEP_DIAGONAL;
+	switch (direction)
+	{
+	case MOVE_DIRECTION_UP:resY = 240 - MOVE_STEP_DIAGONAL; break;
+	case MOVE_DIRECTION_DOWN:resY = 240 + MOVE_STEP_DIAGONAL; break;
+	case MOVE_DIRECTION_LEFT:resX = 320 - MOVE_STEP_DIAGONAL; break;
+	case MOVE_DIRECTION_RIGHT:resX = 320 + MOVE_STEP_DIAGONAL; break;
+	case MOVE_DIRECTION_LEFTUP:
+	{
+		resX = 320 - MOVE_STEP_DIAGONAL;
+		resY = 240 - MOVE_STEP_DIAGONAL; break;
+	}
+	case MOVE_DIRECTION_RIGHTUP:
+	{
+		resX = 320 + MOVE_STEP_DIAGONAL;
+		resY = 240 - MOVE_STEP_DIAGONAL; break;
+	}
+	case MOVE_DIRECTION_LEFTDOWN:
+	{
+		resX = 320 - MOVE_STEP_DIAGONAL;
+		resY = 240 + MOVE_STEP_DIAGONAL; break;
+	}
+	case MOVE_DIRECTION_RIGHTDOWN: 
+	{
+		resX = 320 + MOVE_STEP_DIAGONAL;
+		resY = 240 + MOVE_STEP_DIAGONAL; break;
+	}default:return;
+	}
+	points.x = resX;
+	points.y = resY;
+	//ClientToScreen(m_gameHwnd, &points);
+		//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
+	LPARAM newl = MAKELPARAM(points.x, points.y);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	Sleep(GetDoubleClickTime());
+	PostMessage(m_gameHwnd, WM_RBUTTONDOWN, WM_RBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_RBUTTONUP, WM_RBUTTONUP, newl);
+	return;
+	::ClientToScreen(m_gameHwnd, &points);
+	::SetCursorPos(points.x,points.y);
+	//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
+	YunLai::SimMouseClick(2,1);
+}
+
 int MLAssist::GetGameStatus()
 {
 	return YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "008E5444");
@@ -639,22 +588,129 @@ POINT MLAssist::GetGamePersonPos(int gamePos)
 	return m_personPos[gamePos];
 }
 
+POINT MLAssist::GetGamePersonCoordinate()
+{
+	POINT pointPerson;
+	pointPerson.x = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD28");
+	pointPerson.y = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD30");
+	return pointPerson;
+}
+
+void MLAssist::clickedYes()
+{
+	POINT yesPoint = pointYes;
+	//ClientToScreen(m_gameHwnd, &yesPoint);
+	//SetCursorPos(yesPoint.x, yesPoint.y);
+	//YunLai::SimMouseClick();
+	//return;
+//	Sleep(1000);
+	//ClientToScreen(m_gameHwnd, &points);
+		//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
+	LPARAM newl = MAKELPARAM(pointYes.x, pointYes.y);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);	
+	Sleep(GetDoubleClickTime());
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);	
+}
+
+void MLAssist::clickedNo()
+{
+	LPARAM newl = MAKELPARAM(pointNo.x, pointNo.y);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+}
+
+void MLAssist::clickedSkillBtn()
+{
+	LPARAM newl = MAKELPARAM(pointSkill.x, pointSkill.y);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+}
+
 bool MLAssist::WaitSkillDlg()
 {
+	//int isBattle = GetGameStatus();
+	//COLORREF tempc = GetPixel(m_gameHDC, 311, 214);// 486, 130); //读秒判断
+	//if(tempc == /*5939943*/15780518 && isBattle==1)
+	//{
+	//	return true;
+	//}
 	int isBattle = GetGameStatus();
-	COLORREF tempc = GetPixel(m_gameHDC, 311, 214);// 486, 130);
-	if(tempc == /*5939943*/15780518 && isBattle==1)
+	COLORREF tempc = GetPixel(m_gameHDC, 193, 141);// 486, 130);
+	if (tempc == /*5939943*/15780518 && isBattle == 1)
 	{
 		return true;
 	}
 	return false;
 }
 
+bool MLAssist::WaitAndWakeSkillDlg()
+{
+	int iTryNum = 0;
+	while (iTryNum < 5 && WaitSkillDlg() == false)//点击技能 弹出技能对话框
+	{
+		clickedSkillBtn();
+		++iTryNum;
+		Sleep(200);
+	}
+	return WaitSkillDlg();
+}
+
+void MLAssist::nowhile(QString szMap, int status/*=1*/)
+{
+}
+
 bool MLAssist::WaitActDlg()
 {
+	//int isBattle = GetGameStatus();
+	//COLORREF tempc = GetPixel(m_gameHDC,310,212 );// 356, 27);
+	//if (tempc == /*9749495*/10930928 && isBattle == 1)
+	//{
+	//	return true;
+	//}
+	//return false;
 	int isBattle = GetGameStatus();
-	COLORREF tempc = GetPixel(m_gameHDC,310,212 );// 356, 27);
-	if (tempc == /*9749495*/10930928 && isBattle == 1)
+	COLORREF tempc = GetPixel(m_gameHDC, 585, 8);// 356, 27);
+	if (tempc == /*9749495*/15595514 && isBattle == 1)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool MLAssist::WaitDialog()
+{
+	int isBattle = GetGameStatus();
+	COLORREF tempc = GetPixel(m_gameHDC, 157, 313);// 486, 130);
+	//qDebug() << "221,323"<< tempc;
+	if (tempc == /*5939943*/65536 && isBattle == 0)
+	//COLORREF tempc = GetPixel(m_gameHDC, 465, 12);// 486, 130);
+	//qDebug() << "221,323" << tempc;
+	//if (tempc == /*5939943*/14671859 && isBattle == 0)
+	{
+		return true;
+	}
+	return false;
+}
+//等待人物宠物操作
+bool MLAssist::WaitSelectOpe()
+{
+	int isBattle = GetGameStatus();
+	COLORREF tempc = GetPixel(m_gameHDC, 600, 10);// 486, 130);
+	if (tempc == /*5939943*/7243681 && isBattle == 1)
+	{
+		return true;
+	}
+	return false;
+}
+//等待遇敌
+bool MLAssist::WaitAutoEny()
+{
+	int isBattle = GetGameStatus();
+	COLORREF tempc = GetPixel(m_gameHDC, 632, 12);// 486, 130);
+	if (tempc == /*5939943*/7243681 && isBattle == 0)
 	{
 		return true;
 	}
@@ -668,13 +724,25 @@ void MLAssist::useFirstSkill()
 	points.x = 115;
 	points.y = 175;
 	//ClientToScreen(m_gameHwnd, &points);
+	//SetCursorPos(points.x,points.y);
+	//YunLai::SimMouseClick(1,2);
+	//return;
 		//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
 	LPARAM newl = MAKELPARAM(points.x, points.y);
-	SendMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
-	SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	/*SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
 	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 	SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
-	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);*/
+	/*YunLai::MouseClickedEvent();
+	YunLai::MouseClickedEvent();*/
+	Sleep(GetDoubleClickTime());
+	YunLai::SetFocusToWnd(m_gameHwnd);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	Sleep(1000);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 	//两次 1
 }
 
@@ -691,39 +759,138 @@ void MLAssist::attackAnyEnemy()
 			break;
 		}	
 	}
+	/*ClientToScreen(m_gameHwnd, &enemyPos);
+	SetCursorPos(enemyPos.x, enemyPos.y);
+	YunLai::SimMouseClick(1,2);
+	return;*/
+
 	//选取技能
 	//ClientToScreen(m_gameHwnd, &points);
 		//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
+	YunLai::SetFocusToWnd(m_gameHwnd);
 	LPARAM newl = MAKELPARAM(enemyPos.x, enemyPos.y);
-	SendMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
-	SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
-	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
-	//宠物的
-	SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
-	SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	PostMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	/*YunLai::MouseClickedEvent();
+	YunLai::MouseClickedEvent();*/
+	Sleep(500);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	Sleep(500);
+	PostMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	PostMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	//SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	//SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
+	////宠物的
+	//SendMessage(m_gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
+	//SendMessage(m_gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 }
 
-void MLAssist::AttackThread(MLAssist* pThis)
+int MLAssist::getPersionHP()
 {
-	while (pThis->m_autoBattle)
+	int nHP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A418");
+	return nHP;
+}
+
+int MLAssist::getPersionMP()
+{
+	int nMP = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "00E2A420");
+	return nMP;
+}
+
+
+//
+//void MLAssist::AttackThread(MLAssist* pThis)
+//{
+//	while (pThis->m_autoBattle)
+//	{
+//		//判断是否战斗中 如果不是
+//		if (pThis->GetGameStatus() == 0)
+//		{
+////			pThis->on_pushButton_up_clicked();
+////			pThis->moveToPointEast();
+//			if (pThis->getPersionHP() < 1000)
+//			{
+//				break;
+//			}
+//			if (pThis->getPersionMP() < 1000)
+//			{
+//				if (pThis->WaitToMove(221, 84) == true)
+//				{
+//					pThis->moveToPoint(221, 83);//这个不检测  检测地图变化
+//					//先不检测  等待切换 然后直接去加血
+//					Sleep(1000);
+//					pThis->WaitToMove(12,37);
+//					pThis->WaitToMove(8, 33);
+//					pThis->moveToPoint(8, 31);
+//					Sleep(2000);
+//					pThis->faceToDirection(0);
+//				}
+//				
+//				break;
+//			}
+//			pThis->faceToDirection(MOVE_DIRECTION_DOWN);
+//			if (pThis->WaitDialog())
+//			{
+//				Sleep(2000);
+//				pThis->clickedYes();
+//			}
+//			else
+//			{
+//				Sleep(1000);
+//				continue;//继续 判断
+//			}
+//		}
+//		if (pThis->GetGameStatus() == 0)//战斗状态 是立即变得 应该等待
+//		{
+//			Sleep(2000);
+//			continue;
+//		}
+//		//判断是否读秒中
+//		if (pThis->WaitActDlg())
+//		{
+//			Sleep(100);			
+//			if (pThis->WaitAndWakeSkillDlg() == false)
+//			{
+//				Sleep(200);
+//				continue;
+//			}
+//			
+//			pThis->useFirstSkill();
+//			Sleep(200);
+//			pThis->attackAnyEnemy();
+//		}
+//		Sleep(2000);
+//	}
+//}
+
+void MLAssist::moveToPointEast()
+{
+	int nEast = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD28");
+	int nSouth = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD30");
+	/*if(nEast == m_recordPoint.x)
+		moveToPoint(nEast+1, nSouth);
+	else
+		moveToPoint(m_recordPoint.x, nSouth);*/
+}
+
+void MLAssist::AutoEny()
+{
+	int nEast = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD28");
+	int nSouth = YunLai::ReadMemoryIntFromProcessID(m_gameProcessID, "0092BD30");
+//	if(nEast == m_recordPoint.x || m_lastEnyPoint.y != m_recordPoint.y)
+//		moveToPoint(m_recordPoint.x, m_recordPoint.y);
+}
+
+
+void MLAssist::RemoteMoveCall()
+{
+	_asm
 	{
-		//判断是否战斗中 如果是
-		if (pThis->GetGameStatus() == 0)
-		{
-			pThis->on_pushButton_up_clicked();
-		}
-		if (pThis->GetGameStatus() == 0)
-		{
-			Sleep(2000);
-			continue;
-		}
-		//判断是否读秒中
-		if (pThis->WaitSkillDlg())
-		{
-			pThis->useFirstSkill();
-			pThis->attackAnyEnemy();
-		}
-		Sleep(2000);
+		/*push 0x1
+		push 0x3
+		mov ecx, 0x00ce5758*/
+		mov eax, 0x0044D000
+		call eax		
 	}
 }
 

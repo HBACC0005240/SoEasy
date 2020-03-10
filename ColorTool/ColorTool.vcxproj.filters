@@ -31,9 +31,45 @@
     <ClCompile Include="ColorTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XColorDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XColorMaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XColorPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XColorSquare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XGradientSlider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ITSignalProxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ColorTool.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XColorDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XColorMaster.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XColorPreview.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XColorSquare.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XGradientSlider.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ITSignalProxy.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -46,5 +82,14 @@
     <QtRcc Include="ColorTool.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+    <QtRcc Include="pattern.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="alphaback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

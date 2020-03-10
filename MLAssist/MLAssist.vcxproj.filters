@@ -23,6 +23,12 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="qxtglobalshortcut5">
+      <UniqueIdentifier>{a07a424a-4484-44fc-b0d3-e1299d8287da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibAPI">
+      <UniqueIdentifier>{833178e1-bbee-4120-ad59-c1dea49927a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,7 +37,61 @@
     <ClCompile Include="MLAssist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\WPGTool\YunLai.cpp">
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\LibApiImport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\YunLai.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FZParseScript.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AttachGameWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDataWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScriptWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWorkWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameChatWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFunctionWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBattleWgt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBattleSetWgt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -39,9 +99,66 @@
     <QtMoc Include="MLAssist.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </QtMoc>
+    <QtMoc Include="FZParseScript.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="AttachGameWnd.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameDataWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameCtrl.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameScriptWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameWorkWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameChatWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameFunctionWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameBattleWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GameBattleSetWgt.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MLAssist.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="AttachGameWnd.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameDataWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameScriptWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameWorkWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameChatWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameFunctionWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameBattleWgt.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GameBattleSetWgt.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -51,8 +168,132 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\WPGTool\YunLai.h">
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MINT.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\phnt\ntdbg.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntexapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntgdi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntioapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntkeapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntldr.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntlpcapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntmisc.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntmmapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntnls.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntobapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntpebteb.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntpfapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntpnpapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntpoapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntpsapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntregapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntrtl.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntsam.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntseapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntsmss.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\nttmapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\nttp.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntwow64.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntxcapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\ntzwapi.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\phnt.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\phnt_ntdef.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\phnt_windows.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\subprocesstag.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\phnt\winsta.h">
+      <Filter>LibAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\LibApiImport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\YunLai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\include\phnt\README.md">
+      <Filter>LibAPI</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\include\phnt\zw_options.txt">
+      <Filter>LibAPI</Filter>
+    </Text>
   </ItemGroup>
 </Project>

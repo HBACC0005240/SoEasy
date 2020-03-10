@@ -26,7 +26,7 @@ static HWND g_MainHwnd=nullptr;
 static ulong m_mainPID = 0;
 
 WPGTool::WPGTool(QWidget *parent)
-	: QDialog(parent)
+	: QWidget(parent)
 {
 	ui.setupUi(this);
 	m_KeyStart = 2;
@@ -260,7 +260,7 @@ bool WPGTool::eventFilter(QObject *obj, QEvent *event)
 			}
 		}
 	}
-	return QDialog::eventFilter(obj,event);
+	return QWidget::eventFilter(obj,event);
 }
 
 // Hook callback   钩子回调函数
@@ -338,14 +338,14 @@ LRESULT WPGTool::CallBackProc(DWORD _dwCode,DWORD _wParam,DWORD _lParam)
 		LPARAM newl = MAKELPARAM(pi.x, pi.y); 
 		//qDebug() << pi.x << pi.y << LOWORD(_lParam) << HIWORD(_lParam);
 		//点击单独处理
-		COLORREF tempc = GetPixel(m_gameHDC, pi.x, pi.y);// 486, 130);
-		qDebug() << tempc;
-		if (tempc == 7243681)
-		{
-			qDebug() << pi.x << pi.y;
-		}
-		if (_wParam == WM_RBUTTONDOWN)
-			qDebug() << pi.x << pi.y << LOWORD(_lParam) << HIWORD(_lParam);
+		//COLORREF tempc = GetPixel(m_gameHDC, pi.x, pi.y);// 486, 130);
+		//qDebug() << tempc;
+		//if (tempc == 7243681)
+		//{
+		//	qDebug() << pi.x << pi.y;
+		//}
+		//if (_wParam == WM_RBUTTONDOWN)
+		//	qDebug() << pi.x << pi.y << LOWORD(_lParam) << HIWORD(_lParam);
 		if (_wParam == WM_LBUTTONDOWN)
 		{
 			for (int i = 0; i < m_pHwndList.size(); i++)

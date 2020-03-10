@@ -1,0 +1,170 @@
+//封印抓蜜蜂脚本 战斗2设置好宠物满下线保护 执行脚本前请买好封印卡并设置好全部的战斗设置 详见战斗-1和战斗-2选项卡。逃跑设置中遇到哥布林和蝙蝠逃跑，遇到无一级时逃跑。这样有一级哥布林或蝙蝠时能逃跑而不是抓  By laomo
+set(timer, 100)	
+set(timer1, 100)
+					
+
+set(auto_protect, AutoMove, 1)				// 自动遇敌
+set(auto_protect, AutoMoveType, "4")			// 0:园圈自动遇敌，1东西，2南北，3随机 4原地
+set(auto_protect, SpeedSpc, 100)		
+//set(auto_protect, RandX, 690)				// 随机走动最敌时围绕的中心点的东坐标值填上遇敌坐标(x,y)里的x
+//set(auto_protect, RandY, 286)		 		// 随机走动最敌时围绕的中心点的南坐标值填上遇敌坐标(x,y)里的y
+InputVal("人补魔", "人多少魔以下补魔", "50")
+InputVal("人补血", "人多少血以下补血", "300")
+InputVal("宠补魔", "宠多少魔以下补魔", "50")
+InputVal("宠补血", "宠多少血以下补血", "200")
+
+set(timer, 320)	
+set(timer1, 320)
+begin:                             
+	nop
+	getout
+	WaitTime(3000)
+	if("状态", "GameMap.x.y", "=", "72,123", w2)	// 西2登录点
+	if("状态", "GameMap.x.y", "=", "233,78", e2)	// 东2登录点
+	if("状态", "GameMap.x.y", "=", "162,130", s2)	// 南2登录点
+	if("状态", "GameMap.x.y", "=", "63,79", w1)		// 西1登录点
+	if("状态", "GameMap.x.y", "=", "242,100", e1)	// 东1登录点
+	if("状态", "GameMap.x.y", "=", "141,148", s1)	// 南1登录点
+	goto(begin)
+e1:
+	moveto(242, 88)
+	goto(start)
+e2:
+	moveto(243, 88)
+	goto(start)
+w1:
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 242, 100)
+	nop
+	moveto(242, 88)
+	goto(start)
+w2:
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 233, 78)
+	nop
+	moveto(243, 88)
+	goto(start)
+s1:
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 63, 79)
+	nop
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 242, 100)
+	nop
+	moveto(242, 88)
+	goto(start)
+s2:
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 72, 123)
+	nop
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 233, 78)
+	nop
+	moveto(243, 88)
+	goto(start)
+start:
+	moveto(278, 88)
+	high(10, 281, 88)
+	nowhile("芙蕾雅", 1)
+	moveto(486, 196)
+	moveto(504, 214)
+	moveto(504, 217)
+	moveto(508, 221)
+	moveto(508, 226)
+	moveto(516, 234)
+	moveto(552, 234)
+	moveto(553, 233)
+	moveto(569, 233)
+	moveto(578, 242)
+	moveto(586, 242)
+	moveto(604, 260)
+	moveto(614, 260)
+	moveto(622, 268)
+	moveto(631, 268)
+	moveto(652, 289)
+	moveto(652, 292)
+	moveto(661, 301)
+	moveto(684, 301)
+	moveto(687, 298)
+	moveto(687, 288)
+	moveto(690, 285)
+	begin_auto_action		// 开始自动遇敌
+	goto(scriptstart)
+scriptstart:
+	if("人", "魔", "<", "人补魔", salebegin)		// 魔小于100
+	if("人", "血", "<", "人补血", salebegin)
+	if("宠", "血", "<", "宠补血", salebegin)
+	if("宠", "魔", "<", "宠补魔", salebegin)
+	goto(scriptstart)		// 继续自动遇敌
+
+salebegin:
+	end_auto_action				// 结束战斗
+	nop
+	getout
+	WaitTime(3000)
+	if("状态", "GameMap.x.y", "=", "72,123", ww2)	// 西2登录点
+	if("状态", "GameMap.x.y", "=", "233,78", ee2)	// 东2登录点
+	if("状态", "GameMap.x.y", "=", "162,130", ss2)	// 南2登录点
+	if("状态", "GameMap.x.y", "=", "63,79", ww1)		// 西1登录点
+	if("状态", "GameMap.x.y", "=", "242,100", ee1)	// 东1登录点
+	if("状态", "GameMap.x.y", "=", "141,148", ss1)	// 南1登录点
+	goto(begin)
+ee1:
+	moveto(242, 95)
+	moveto(233, 86)
+	moveto(221, 86)
+	goto(starsalet)
+ee2:
+	moveto(233, 86)
+	moveto(221, 86)
+	goto(starsalet)
+ww1:
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 242, 100)
+	nop
+	goto(ee1)
+ww2:
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 233, 78)
+	nop
+	goto(ee2)
+ss1:
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 63, 79)
+	nop
+	turn_about(0, "")		// 转向北
+	nop
+	nowhile("法兰城", 242, 100)
+	nop
+	goto(ww1)
+ss2:
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 72, 123)
+	nop
+	turn_about(2, "")		// 转向北
+	nop
+	nowhile("法兰城", 233, 78)
+	nop
+	goto(ww2)
+starsalet:
+	high(10, 221, 83)
+	nowhile("医院", 1)
+	moveto(12, 37)
+	moveto(8, 33)
+	moveto(8, 31)
+	renew(north)		// 恢复人宠
+	nowhile(renew)
+	nop
+	goto(begin)
+
+nop

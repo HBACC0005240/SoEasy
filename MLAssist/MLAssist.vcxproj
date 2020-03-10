@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -22,7 +30,16 @@
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
@@ -35,7 +52,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -46,6 +69,12 @@
     <OutDir>..\bin</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin</OutDir>
+  </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
@@ -53,14 +82,36 @@
     <QtInstall>5.14.0-msvc2017_64</QtInstall>
     <QtModules>core;gui;widgets;concurrent</QtModules>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="QtSettings">
+    <QtInstall>5.14.0-msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets;concurrent</QtModules>
+  </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QtInstall>5.14.0-msvc2017_64</QtInstall>
+    <QtModules>core;gui;widgets;concurrent</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="QtSettings">
+    <QtInstall>5.12.1-2017_32</QtInstall>
     <QtModules>core;gui;widgets;concurrent</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
     <Import Project="$(QtMsBuild)\qt.props" />
   </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName)d.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
@@ -88,22 +139,123 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);..\include;..\include\phnt;.\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\WPGTool\YunLai.cpp" />
+    <ClCompile Include="..\include\LibApiImport.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp" />
+    <ClCompile Include="..\include\YunLai.cpp" />
+    <ClCompile Include="AttachGameWnd.cpp" />
+    <ClCompile Include="FZParseScript.cpp" />
+    <ClCompile Include="GameBattleSetWgt.cpp" />
+    <ClCompile Include="GameBattleWgt.cpp" />
+    <ClCompile Include="GameChatWgt.cpp" />
+    <ClCompile Include="GameCtrl.cpp" />
+    <ClCompile Include="GameData.cpp" />
+    <ClCompile Include="GameDataWgt.cpp" />
+    <ClCompile Include="GameFunctionWgt.cpp" />
+    <ClCompile Include="GameScriptWgt.cpp" />
+    <ClCompile Include="GameWorkWgt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MLAssist.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MLAssist.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="AttachGameWnd.ui" />
+    <QtUic Include="GameBattleSetWgt.ui" />
+    <QtUic Include="GameBattleWgt.ui" />
+    <QtUic Include="GameChatWgt.ui" />
+    <QtUic Include="GameDataWgt.ui" />
+    <QtUic Include="GameFunctionWgt.ui" />
+    <QtUic Include="GameScriptWgt.ui" />
+    <QtUic Include="GameWorkWgt.ui" />
     <QtUic Include="MLAssist.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="MLAssist.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\WPGTool\YunLai.h" />
+    <ClInclude Include="..\include\LibApiImport.h" />
+    <ClInclude Include="..\include\MINT.h" />
+    <ClInclude Include="..\include\phnt\ntdbg.h" />
+    <ClInclude Include="..\include\phnt\ntexapi.h" />
+    <ClInclude Include="..\include\phnt\ntgdi.h" />
+    <ClInclude Include="..\include\phnt\ntioapi.h" />
+    <ClInclude Include="..\include\phnt\ntkeapi.h" />
+    <ClInclude Include="..\include\phnt\ntldr.h" />
+    <ClInclude Include="..\include\phnt\ntlpcapi.h" />
+    <ClInclude Include="..\include\phnt\ntmisc.h" />
+    <ClInclude Include="..\include\phnt\ntmmapi.h" />
+    <ClInclude Include="..\include\phnt\ntnls.h" />
+    <ClInclude Include="..\include\phnt\ntobapi.h" />
+    <ClInclude Include="..\include\phnt\ntpebteb.h" />
+    <ClInclude Include="..\include\phnt\ntpfapi.h" />
+    <ClInclude Include="..\include\phnt\ntpnpapi.h" />
+    <ClInclude Include="..\include\phnt\ntpoapi.h" />
+    <ClInclude Include="..\include\phnt\ntpsapi.h" />
+    <ClInclude Include="..\include\phnt\ntregapi.h" />
+    <ClInclude Include="..\include\phnt\ntrtl.h" />
+    <ClInclude Include="..\include\phnt\ntsam.h" />
+    <ClInclude Include="..\include\phnt\ntseapi.h" />
+    <ClInclude Include="..\include\phnt\ntsmss.h" />
+    <ClInclude Include="..\include\phnt\nttmapi.h" />
+    <ClInclude Include="..\include\phnt\nttp.h" />
+    <ClInclude Include="..\include\phnt\ntwow64.h" />
+    <ClInclude Include="..\include\phnt\ntxcapi.h" />
+    <ClInclude Include="..\include\phnt\ntzwapi.h" />
+    <ClInclude Include="..\include\phnt\phnt.h" />
+    <ClInclude Include="..\include\phnt\phnt_ntdef.h" />
+    <ClInclude Include="..\include\phnt\phnt_windows.h" />
+    <ClInclude Include="..\include\phnt\subprocesstag.h" />
+    <ClInclude Include="..\include\phnt\winsta.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h" />
+    <ClInclude Include="..\include\YunLai.h" />
+    <QtMoc Include="GameWorkWgt.h" />
+    <QtMoc Include="GameChatWgt.h" />
+    <QtMoc Include="GameFunctionWgt.h" />
+    <QtMoc Include="GameBattleWgt.h" />
+    <QtMoc Include="GameBattleSetWgt.h" />
+    <ClInclude Include="stdafx.h" />
+    <QtMoc Include="GameScriptWgt.h" />
+    <QtMoc Include="GameDataWgt.h" />
+    <QtMoc Include="AttachGameWnd.h" />
+    <QtMoc Include="GameCtrl.h" />
+    <ClInclude Include="GameData.h" />
+    <QtMoc Include="FZParseScript.h" />
+    <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\include\phnt\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\include\phnt\zw_options.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

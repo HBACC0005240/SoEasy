@@ -4,7 +4,7 @@
 #include <QtWidgets/QDialog>
 #include "ui_WPGTool.h"
 #include <windows.h>
-class WPGTool : public QDialog
+class WPGTool : public QWidget
 {
 	Q_OBJECT
 

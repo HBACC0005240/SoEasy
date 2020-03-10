@@ -7,10 +7,61 @@
 #include "../include/ITPublic.h"
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"Psapi.lib")
-
+#include "LibApiImport.h"
 static HWND m_lastHwnd = nullptr;
 #define FORMAT_PATH(path) path.replace('\\','/').toLower()
 
+virtual_buffer_t::virtual_buffer_t() : m_cbSize(0), m_pBuffer(NULL)
+{
+}
+virtual_buffer_t::virtual_buffer_t(size_t size) : m_cbSize(size), m_pBuffer(VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE))
+{
+}
+
+virtual_buffer_t::~virtual_buffer_t()
+{
+	if (m_pBuffer)
+		VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+}
+
+void * virtual_buffer_t::GetSpace(size_t needSize)
+{
+	if (m_cbSize < needSize)
+	{
+		if (m_pBuffer)
+			VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+		m_pBuffer = VirtualAlloc(NULL, needSize, MEM_COMMIT, PAGE_READWRITE);
+		m_cbSize = needSize;
+	}
+	return m_pBuffer;
+}
+
+crt_buffer_t::crt_buffer_t() : m_cbSize(0), m_pBuffer(NULL)
+{
+}
+
+crt_buffer_t::crt_buffer_t(size_t size) : m_cbSize(size), m_pBuffer(malloc(size))
+{
+}
+
+crt_buffer_t::~crt_buffer_t()
+{
+	if (m_pBuffer)
+		free(m_pBuffer);
+}
+
+void * crt_buffer_t::GetSpace(size_t needSize)
+{
+	if (m_cbSize < needSize)
+	{
+		if (m_pBuffer)
+			m_pBuffer = realloc(m_pBuffer, needSize);
+		else
+			m_pBuffer = malloc(needSize);
+		m_cbSize = needSize;
+	}
+	return m_pBuffer;
+}
 YunLai::YunLai()
 {
 }
@@ -190,6 +241,91 @@ BOOL YunLai::EnumChildWindowsCallBack(HWND hwnd, LPARAM lParam)
 	return FALSE;
 }
 
+int YunLai::GetColorDepth()
+{
+	DEVMODEW dMode;
+	dMode.dmSize = sizeof(DEVMODE);
+	dMode.dmDriverExtra = 0;
+	EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS,&dMode);
+	return dMode.dmBitsPerPel;//以像素的位数为单位。例如，16色使用4位，256色使用8位，而65536色使用16位。
+}
+//屏幕取颜色, 整数型, , 取屏幕中指定坐标的颜色, 或屏幕位图中指定窗口中坐标的颜色.(返回10进制颜色值)
+//.参数 水平位置, 整数型, , 指定点横坐标
+//.参数 垂直位置, 整数型, , 指定点纵坐标
+//.参数 窗口句柄, 整数型, 可空, 指定窗口句柄后, 则获取窗口客户区内指定坐标点颜色值
+DWORD YunLai::GetScreenColor(int x, int y, HWND hwnd)
+{
+	POINT screenPoint;
+	if (hwnd)
+	{
+		ClientToScreen(hwnd,&screenPoint);
+	}
+	HDC pHDC = GetDC(nullptr);//屏幕的
+	DWORD dColor = GetPixel(pHDC, x + screenPoint.x, y + screenPoint.y);
+	ReleaseDC(nullptr,pHDC);
+}
+
+POINT YunLai::FindBMPColor(uchar* pData, DWORD nColor, int nDVal, POINT nFindPoint)
+{
+	return POINT();
+	/*.局部变量 匿名局部变量_6697, 匿名数据类型_6732, , ,
+		.局部变量 匿名局部变量_6698, 整数型, , ,
+		.局部变量 匿名局部变量_6699, 坐标型, , ,
+		.局部变量 匿名局部变量_6700, 整数型, , ,
+		.局部变量 匿名局部变量_6701, 字节集, , ,
+		.局部变量 匿名局部变量_6702, 字节集, , ,
+
+		赋值(匿名局部变量_6699.x, -1)
+		赋值(匿名局部变量_6699.y, -1)
+		赋值(匿名局部变量_6697, 位图取色深(字节集))
+		.如果真(等于(匿名局部变量_6697.匿名成员6735, 0))
+		返回(匿名局部变量_6699)
+		.如果真结束
+		.如果(或者(小于(起始坐标.x, 1), 小于(起始坐标.y, 1)))
+		赋值(匿名局部变量_6698, 55)
+		.否则
+		赋值(匿名局部变量_6698, 相加(相乘(相加(相乘(相减(匿名局部变量_6697.匿名成员6734, 起始坐标.y, 1), 匿名局部变量_6697.匿名成员6733), 起始坐标.x), 匿名局部变量_6697.匿名成员6737), 55, 匿名局部变量_6697.匿名成员6737))
+		.如果结束
+		赋值(匿名局部变量_6701, 到字节集(颜色))
+		.如果(大于(误差, 0))
+		.变量循环首(匿名局部变量_6698, 相减(取字节集长度(字节集), 2), 匿名局部变量_6697.匿名成员6737, 匿名局部变量_6700)
+		.如果真(并且(小于(取绝对值(相减(字节集[相加(匿名局部变量_6700, 2)], 匿名局部变量_6701[1])), 相加(误差, 1)), 小于(取绝对值(相减(字节集[相加(匿名局部变量_6700, 1)], 匿名局部变量_6701[2])), 相加(误差, 1)), 小于(取绝对值(相减(字节集[匿名局部变量_6700], 匿名局部变量_6701[3])), 相加(误差, 1))))
+		赋值(匿名局部变量_6699.x, 相减(求余数(相加(相除(相减(匿名局部变量_6700, 55), 匿名局部变量_6697.匿名成员6737), 1), 匿名局部变量_6697.匿名成员6733), 1))
+		赋值(匿名局部变量_6699.y, 相减(匿名局部变量_6697.匿名成员6734, 整除(相加(相除(相减(匿名局部变量_6700, 55), 匿名局部变量_6697.匿名成员6737), 1), 匿名局部变量_6697.匿名成员6733), 1))
+		返回(匿名局部变量_6699)
+		.如果真结束
+
+		.变量循环尾()
+		返回(匿名局部变量_6699)
+		.否则
+		赋值(匿名局部变量_6702, { 0, 0, 0 })
+		赋值(匿名局部变量_6702[1], 匿名局部变量_6701[3])
+		赋值(匿名局部变量_6702[2], 匿名局部变量_6701[2])
+		赋值(匿名局部变量_6702[3], 匿名局部变量_6701[1])
+		赋值(匿名局部变量_6700, 寻找字节集(字节集, 匿名局部变量_6702, 匿名局部变量_6698))
+		.判断循环首(大于(求余数(相减(匿名局部变量_6700, 55), 匿名局部变量_6697.匿名成员6737), 0))
+		.如果真(等于(匿名局部变量_6700, -1))
+		返回(匿名局部变量_6699)
+		.如果真结束
+		赋值(匿名局部变量_6700, 寻找字节集(字节集, 匿名局部变量_6702, 相加(匿名局部变量_6700, 1)))
+		.判断循环尾()
+		.如果真(等于(匿名局部变量_6700, -1))
+		输出调试文本(匿名局部变量_6697.匿名成员6733)
+		输出调试文本(匿名局部变量_6700)
+		返回(匿名局部变量_6699)
+		.如果真结束
+		赋值(匿名局部变量_6699.x, 相减(求余数(相加(相除(相减(匿名局部变量_6700, 55), 匿名局部变量_6697.匿名成员6737), 1), 匿名局部变量_6697.匿名成员6733), 1))
+		赋值(匿名局部变量_6699.y, 相减(匿名局部变量_6697.匿名成员6734, 整除(相加(相除(相减(匿名局部变量_6700, 55), 匿名局部变量_6697.匿名成员6737), 1), 匿名局部变量_6697.匿名成员6733), 1))
+		返回(匿名局部变量_6699)
+		.如果结束*/
+
+}
+
+POINT YunLai::FindScreenColor(DWORD nColor, int nLeftX, int nLeftY, int nWidth, int nHeight, int nDVal, POINT nFindPoint, HWND hwnd/*=nullptr*/)
+{
+	return FindBMPColor(nColor);
+}
+
 char* YunLai::ReadMemoryStrFromProcessID(DWORD processID, const char* szAddress, int nLen)
 {
 	bool bRet = false;
@@ -255,6 +391,80 @@ int YunLai::ReadMemoryIntFromProcessID(DWORD processID, const char* szAddress)
 	return memoryData;
 }
 
+void YunLai::WriteMemoryIntToWnd(HWND hwnd, const char* szAddress, int nVal)
+{
+//	LPCVOID pAddress = (LPCVOID)strtoul(szAddress, NULL, 16);
+	LPVOID pAddress = (LPVOID)strtoul(szAddress, NULL, 16);
+	DWORD hProcessID = GetProcessIDFromWnd(hwnd);
+	HANDLE hProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, hProcessID);
+	WriteProcessMemory(hProcessHandle, pAddress, &nVal, 4, 0);
+}
+void YunLai::WriteMemoryIntToProcess(DWORD hProcessID, const char* szAddress, int nVal)
+{
+	LPVOID pAddress = (LPVOID)strtoul(szAddress, NULL, 16);
+	HANDLE hProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, hProcessID);
+	WriteProcessMemory(hProcessHandle, pAddress, &nVal, 4, 0);
+}
+
+bool YunLai::ForceOpenProcess(DWORD hProcessID, DWORD nExitStatus)
+{
+
+}
+
+bool YunLai::ForceCloseProcess(DWORD hProcessID, DWORD nExitStatus)
+{
+	bool bRet = false;
+	if (ZwCreateJobObject_Import())
+	{
+
+	}
+		赋值(匿名局部变量_7624.匿名成员7638, 24)
+		匿名子程序_27995(“ntdll.dll”, “ZwCreateJobObject”)
+		赋值(匿名局部变量_7622, ZwCreateJobObject_7699(匿名局部变量_7623, #匿名常量_7704, 匿名局部变量_7624))
+		.如果真(大于或等于(匿名局部变量_7622, 0))
+		匿名子程序_27995(“ntdll.dll”, “ZwAssignProcessToJobObject”)
+		赋值(匿名局部变量_7622, ZwAssignProcessToJobObject_7705(匿名局部变量_7623, hProcess))
+		.如果真(大于或等于(匿名局部变量_7622, 0))
+		匿名子程序_27995(“ntdll.dll”, “ZwTerminateJobObject”)
+		赋值(匿名局部变量_7622, ZwTerminateJobObject_7708(匿名局部变量_7623, ExitStatus))
+		.如果真(大于或等于(匿名局部变量_7622, 0))
+		赋值(匿名局部变量_7625, 真)
+		.如果真结束
+
+		.如果真结束
+		匿名子程序_27995(“ntdll.dll”, “ZwClose”)
+		ZwClose_7697(匿名局部变量_7623)
+		.如果真结束
+		.如果真(等于(匿名局部变量_7625, 假))
+		匿名子程序_27995(“ntdll.dll”, “ZwTerminateProcess”)
+		赋值(匿名局部变量_7622, ZwTerminateProcess_7711(hProcess, ExitStatus))
+		.如果真(大于或等于(匿名局部变量_7622, 0))
+		赋值(匿名局部变量_7625, 真)
+		.如果真结束
+
+		.如果真结束
+		返回(匿名局部变量_7625)
+}
+//获取库句柄  参数 库名  系统库是库名 否则全路径
+HMODULE YunLai::GetLibraryHandle(const char* szLib)
+{
+	HMODULE hModule = ::GetModuleHandle((LPCWSTR)szLib);
+	if (NULL == hModule) hModule = ::LoadLibrary((LPCWSTR)szLib);
+	if (NULL == hModule) throw;
+	return hModule;
+}
+
+FARPROC YunLai::GetFunAddress(const char* szLib, const char* szFun)
+{
+	HMODULE hModel = GetLibraryHandle(szLib);
+	if (hModel == nullptr)
+		return nullptr;
+	FARPROC funAddr = GetProcAddress(hModel, (LPCSTR)szFun);
+	if (funAddr == nullptr)
+		return nullptr;
+	return funAddr;
+}
+
 char* YunLai::GetKeyTextFromKey(int nKey)
 {
 	switch (nKey)
@@ -274,6 +484,65 @@ char* YunLai::GetKeyTextFromKey(int nKey)
 	default:;break;
 	}
 	return "";
+}
+
+void YunLai::KeyClickedEvent()
+{
+	//PostMessage(aHandle, WM_char, ord(s[i]), 0); //发送字符
+	keybd_event(13, 0, 0, 0);//回车
+}
+
+int YunLai::MakeKeyLParam(int VirtualKey, int flag)
+{
+	UINT sCode;
+	//Firstbyte ; lparam 参数的 24-31位
+	UINT Firstbyte;
+	switch (flag)
+	{
+	case WM_KEYDOWN:    Firstbyte = 0;   break;
+	case WM_KEYUP:      Firstbyte = 0xC0; break;
+	case WM_CHAR:       Firstbyte = 0x20; break;
+	case WM_SYSKEYDOWN: Firstbyte = 0x20; break;
+	case WM_SYSKEYUP:   Firstbyte = 0xE0; break;
+	case WM_SYSCHAR:    Firstbyte = 0xE0; break;
+	}
+	// 键的扫描码; lparam 参数 的 16-23位
+	// 16–23 Specifies the scan code. 
+	UINT iKey = MapVirtualKeyW(VirtualKey, 0);
+	// 1为 lparam 参数的 0-15位，即发送次数
+	// 0–15 Specifies the repeat count for the current message. 
+	sCode = (Firstbyte << 24) + 1 + (iKey << 16) + 1;
+	return sCode;
+}
+
+void YunLai::SimKeyClick(UINT vk_Code, BOOL bDown)
+{
+	DWORD dwFlages = 0;
+	switch (vk_Code)
+	{
+	default:
+		break;
+	case(VK_NUMLOCK):
+	case(VK_CAPITAL):
+	case(VK_SCROLL):
+	case(VK_CONTROL):
+	case(VK_LCONTROL):
+	case(VK_RCONTROL):
+	case(VK_SHIFT):
+	case(VK_LSHIFT):
+	case(VK_RSHIFT):
+	case(VK_MENU):
+	case(VK_LMENU):
+	case(VK_RMENU):
+		dwFlages |= KEYEVENTF_EXTENDEDKEY;
+	}
+	WORD wScan = MapVirtualKeyW(vk_Code, 0);
+	INPUT Input[1] = { 0 };
+	Input[0].type = INPUT_KEYBOARD;
+	Input[0].ki.wVk = vk_Code;
+	Input[0].ki.wScan = wScan;
+	Input[0].ki.dwFlags = (bDown) ? dwFlages : dwFlages | KEYEVENTF_KEYUP;
+	SendInput(1, Input, sizeof(INPUT));
 }
 //整数型, 可空, 可空:为左键  1 #左键   2 #右键   3 #中键
 //.参数 控制, 整数型, 可空, 可空:为单击  1 #单击   2 #双击   3 #按下  4 #放开
@@ -333,6 +602,84 @@ void YunLai::MouseClickedEvent(int nType, int nCtrl)
 	}
 	}
 }
+//模拟鼠标点击一次
+void YunLai::SimMouseClick(int nType, int nCtrl)
+{
+	INPUT input;
+	input.type = INPUT_MOUSE;
+	input.mi.dx = 0;
+	input.mi.dy = 0;
+	input.mi.mouseData = 0;
+	//input.mi.dwFlags = bDown ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_LEFTUP;
+	input.mi.time = 0;
+	input.mi.dwExtraInfo = 0;
+
+	DWORD mouseDown = MOUSEEVENTF_LEFTDOWN;
+	DWORD mouseUp = MOUSEEVENTF_LEFTUP;
+	switch (nType)
+	{
+	case 1:
+	{
+		mouseDown = MOUSEEVENTF_LEFTDOWN;
+		mouseUp = MOUSEEVENTF_LEFTUP;
+		break;
+	}
+	case 2:
+	{
+		mouseDown = MOUSEEVENTF_RIGHTDOWN;
+		mouseUp = MOUSEEVENTF_RIGHTUP;
+		break;
+	}
+	case 3:
+	{
+		mouseDown = MOUSEEVENTF_MIDDLEDOWN;
+		mouseUp = MOUSEEVENTF_MIDDLEUP;
+		break;
+	}
+	default:
+		break;
+	}
+	switch (nCtrl)
+	{
+	case 2:
+	{
+		input.mi.dwFlags = mouseDown;
+		SendInput(1, &input, sizeof(INPUT));
+		input.mi.dwFlags = mouseUp;
+		SendInput(1, &input, sizeof(INPUT));
+		uint clickTime = GetDoubleClickTime();
+		Sleep(clickTime);
+		input.mi.dwFlags = mouseDown;
+		SendInput(1, &input, sizeof(INPUT));
+		input.mi.dwFlags = mouseUp;
+		SendInput(1, &input, sizeof(INPUT));
+		break;
+	}
+	case 3:
+	{
+		input.mi.dwFlags = mouseDown;
+		SendInput(1, &input, sizeof(INPUT));
+		break;
+
+	}
+	case 4:
+	{
+		input.mi.dwFlags = mouseUp;
+		SendInput(1, &input, sizeof(INPUT));
+		break;
+	}
+	case 1:
+	default:
+	{
+		input.mi.dwFlags = mouseDown;
+		SendInput(1, &input, sizeof(INPUT));
+		input.mi.dwFlags = mouseUp;
+		SendInput(1, &input, sizeof(INPUT));
+		break;
+	}
+	}
+}
+
 //超级延时, , , 高精度延时, cpu占用低, 窗口不卡死, 一次最大可延时几年(无返回值)
 //.参数 延时间隔, 整数型, , 1000微秒 = 1毫秒 ； 1000毫秒 = 1秒
 //.参数 延时单位, 整数型, 可空, 可空:毫秒  0 毫秒  1 微秒  2 秒  3 分  4 小时  5 天
@@ -417,6 +764,106 @@ char* YunLai::MyItoa(int num, char* str, int radix)
 	}
 	return str;
 }
+//
+//bool YunLai::DIBSnapshot(HWND hWnd, int scale, const SnapshotCallback &callback)
+//{
+//	HDC hDC = GetDC(hWnd);
+//	if (!hDC)
+//	{
+//		return false;
+//	}
+//
+//	const auto hDCScope = std::experimental::make_scope_exit([hWnd, hDC] { ReleaseDC(hWnd, hDC); });
+//
+//	RECT rcScreen;
+//
+//	if (hWnd == GetDesktopWindow())
+//	{
+//		rcScreen.left = GetSystemMetrics(SM_XVIRTUALSCREEN);
+//		rcScreen.top = GetSystemMetrics(SM_YVIRTUALSCREEN);
+//		rcScreen.right = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+//		rcScreen.bottom = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+//	}
+//	else
+//	{
+//		GetWindowRect(hWnd, &rcScreen);
+//	}
+//
+//	int destW = (scale == 100) ? (rcScreen.right - rcScreen.left) : (rcScreen.right - rcScreen.left) * scale / 100;
+//	int destH = (scale == 100) ? (rcScreen.bottom - rcScreen.top) : (rcScreen.bottom - rcScreen.top) * scale / 100;
+//
+//	BITMAPINFOHEADER bi;
+//	memset(&bi, 0, sizeof(bi));
+//	bi.biSize = sizeof(bi);
+//	bi.biWidth = destW;
+//	bi.biHeight = -destH;
+//	bi.biPlanes = 1;
+//	bi.biBitCount = 32;
+//	bi.biCompression = BI_RGB;
+//
+//	PVOID pv = NULL;
+//	HBITMAP hBitmap = CreateDIBSection(hDC, (BITMAPINFO *)&bi, DIB_RGB_COLORS, &pv, 0, 0);
+//	if (!hBitmap)
+//	{
+//		OutputDebugStringA("CreateDIBSection failed");
+//		return false;
+//	}
+//	const auto hBitmapScope = std::experimental::make_scope_exit([hBitmap] { DeleteObject(hBitmap); });
+//
+//	HDC hMemDC = CreateCompatibleDC(hDC);
+//	if (!hMemDC)
+//	{
+//		OutputDebugStringA("CreateCompatibleDC failed");
+//		return false;
+//	}
+//	const auto hMemDCScope = std::experimental::make_scope_exit([hMemDC] { DeleteDC(hMemDC); });
+//
+//	HBITMAP hOldBmp = (HBITMAP)SelectObject(hMemDC, hBitmap);
+//
+//	const auto hOldBmpScope = std::experimental::make_scope_exit([hMemDC, hOldBmp] { SelectObject(hMemDC, hOldBmp); });
+//
+//	if (scale != 100)
+//	{
+//		SetStretchBltMode(hMemDC, STRETCH_HALFTONE);
+//
+//		if (!StretchBlt(hMemDC, 0, 0, destW, destH, hDC, 0, 0, rcScreen.right, rcScreen.bottom, SRCCOPY))
+//		{
+//			OutputDebugStringA("StretchBlt failed");
+//			return false;
+//		}
+//	}
+//	else
+//	{
+//		if (!BitBlt(hMemDC, 0, 0, rcScreen.right, rcScreen.bottom, hDC, 0, 0, SRCCOPY))
+//		{
+//			OutputDebugStringA("BitBlt failed");
+//			return false;
+//		}
+//	}
+//
+//	BITMAP bitmap;
+//	if (!GetObjectW(hBitmap, sizeof(BITMAP), &bitmap))
+//	{
+//		OutputDebugStringA("GetObjectW failed");
+//		return false;
+//	}
+//	PVOID pBuffer = m_snapshot_buffer.GetSpace(bitmap.bmHeight * bitmap.bmWidthBytes);
+//	if (!pBuffer)
+//	{
+//		OutputDebugStringA("m_snapshot_buffer.GetSpace failed");
+//		return false;
+//	}
+//
+//	if (GetBitmapBits(hBitmap, bitmap.bmHeight * bitmap.bmWidthBytes, pBuffer) <= 0)
+//	{
+//		OutputDebugStringA("GetBitmapBits failed");
+//		return false;
+//	}
+//
+//	callback(pBuffer, bitmap.bmHeight * bitmap.bmWidthBytes, bitmap.bmWidth, bitmap.bmHeight, bitmap.bmBitsPixel);
+//
+//	return true;
+//}
 
 DWORD YunLai::GetProcessIDFromWnd(HWND hwnd)
 {
@@ -482,3 +929,26 @@ bool YunLai::SetWindowHide(HWND hwnd)
 	return false;
 }
 	
+
+//
+//bool YunLai::DIBToCvMat(cv::Mat &mat, void *pBuffer, size_t cbBuffer, int width, int height, int bbp)
+//{
+//	mat.create(height, width, CV_8UC3);
+//
+//	int nChannels = bbp / 8;
+//
+//	int nStep = nChannels * width;
+//
+//	for (int nRow = 0; nRow < height; nRow++)
+//	{
+//		auto pucRow = (mat.ptr<uchar>(nRow));
+//		for (int nCol = 0; nCol < width; nCol++)
+//		{
+//			pucRow[nCol * 3 + 0] = *((uchar *)pBuffer + nRow * nStep + nCol * nChannels + 0);
+//			pucRow[nCol * 3 + 1] = *((uchar *)pBuffer + nRow * nStep + nCol * nChannels + 1);
+//			pucRow[nCol * 3 + 2] = *((uchar *)pBuffer + nRow * nStep + nCol * nChannels + 2);
+//		}
+//	}
+//
+//	return true;
+//}

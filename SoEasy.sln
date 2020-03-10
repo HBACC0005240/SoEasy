@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WPGTool", "WPGTool\WPGTool.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MLAssist", "MLAssist\MLAssist.vcxproj", "{25130E9D-B735-4EF4-A656-60F7F7D18067}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorTool", "ColorTool\ColorTool.vcxproj", "{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -56,9 +58,16 @@ Global
 		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Debug|Win32.ActiveCfg = Debug|x64
 		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Debug|x64.ActiveCfg = Debug|x64
 		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Debug|x64.Build.0 = Debug|x64
-		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Release|Win32.ActiveCfg = Release|x64
+		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Release|Win32.ActiveCfg = Release|Win32
+		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Release|Win32.Build.0 = Release|Win32
 		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Release|x64.ActiveCfg = Release|x64
 		{25130E9D-B735-4EF4-A656-60F7F7D18067}.Release|x64.Build.0 = Release|x64
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Debug|Win32.ActiveCfg = Debug|x64
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Debug|x64.ActiveCfg = Debug|x64
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Debug|x64.Build.0 = Debug|x64
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Release|Win32.ActiveCfg = Release|Win32
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Release|x64.ActiveCfg = Release|x64
+		{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
