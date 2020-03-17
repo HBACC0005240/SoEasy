@@ -9,5 +9,9 @@
 
 // 添加要在此处预编译的标头
 #include "framework.h"
+#include <Windows.h>
+#include <string>
+#include <iostream>
+static FILE* pSendDataFile = nullptr;
 
 #endif //PCH_H

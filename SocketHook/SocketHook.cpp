@@ -1,6 +1,5 @@
 // BeepHook.cpp : Defines the exported functions for the DLL application.
 //
-
 #include "pch.h"
 
 #include <easyhook.h>
@@ -39,13 +38,72 @@ DWORD AnsiHex2DWORD(LPTSTR s)
 	}
 	return ret;
 }
+//
+//HWND FindClient()
+//{
+//	LPCWSTR sClassName = LPCWSTR("WPEXSOCKETSPY");
+//	HWND hWnd = ::FindWindow(sClassName, NULL);
+//	return hWnd;
+//}
+//
+//void SendDataToClient(BOOL bSend, SOCKET s, LPVOID lpData, DWORD dwDataLen, LPCTSTR lpszFuncName)
+//{
+//	HWND hClient = FindClient();
+//	if (::IsWindow(hClient))
+//	{
+//		DWORD dwSocketSize = sizeof(SOCKETDATA) + dwDataLen - 1;
+//		SOCKETDATA* pSocketData = (SOCKETDATA*)new BYTE[dwSocketSize];
+//		memset(pSocketData, 0, dwSocketSize);
+//		pSocketData->cbSize = dwSocketSize;
+//		pSocketData->s = s;
+//		pSocketData->dwDataLen = dwDataLen;
+//		memcpy(pSocketData->lpData, lpData, dwDataLen);
+//		_tcscpy_s(pSocketData->sFuncName, FUNCNAMELEN, lpszFuncName);
+//		pSocketData->dwPID = GetCurrentProcessId();
+//
+//		HWND hClient = FindClient();
+//		DWORD dwClientPID = 0;
+//		GetWindowThreadProcessId(hClient, &dwClientPID);
+//		int dRet = WSADuplicateSocket(s, dwClientPID, &pSocketData->WSAProtocloInfo);
+//
+//		int sockSrcAddrLen = sizeof(pSocketData->srcsockaddr);
+//		int sockDestAddrLen = sizeof(pSocketData->destsockaddr);
+//
+//		pSocketData->bSend = bSend;
+//		if (bSend)
+//		{
+//			getsockname(s, (sockaddr*)&pSocketData->srcsockaddr, &sockSrcAddrLen);
+//			getpeername(s, (sockaddr*)&pSocketData->destsockaddr, &sockDestAddrLen);
+//		}
+//		else
+//		{
+//			getpeername(s, (sockaddr*)&pSocketData->srcsockaddr, &sockSrcAddrLen);
+//			getsockname(s, (sockaddr*)&pSocketData->destsockaddr, &sockDestAddrLen);
+//		}
+//
+//
+//		COPYDATASTRUCT cds = { 0 };
+//		cds.dwData = WM_DLLDATA;
+//		cds.lpData = pSocketData;
+//		cds.cbData = dwSocketSize;
+//		::SendMessage(hClient, WM_COPYDATA, (WPARAM)hClient, (LPARAM)&cds);
+//		delete pSocketData;
+//		pSocketData = NULL;
+//	}
+//}
+
 int WINAPI mySocketHook(SOCKET s, const char *buf, int len, int flags)
 {
 	//处理自己的发送数据
 	//记录封包
-	UCHAR* pData = new UCHAR[len];
-	memcpy(pData,buf,len);
-	OutputDebugString(LPCWSTR(buf));
+	//UCHAR* pData = new UCHAR[len];
+	//memcpy(pData,buf,len);
+	//OutputDebugString(LPCWSTR(buf));
+	//FILE* pFile;
+	//fopen_s(&pFile, "./sendDataT", "awb");
+	//if (pFile)
+	//	fwrite(buf, 1, len, pFile);
+	//fclose(pFile);
 	return send(s,buf,len,flags);
 }
 BOOL WINAPI myMessageBoxHook(HWND hwnd, LPCTSTR pBuf,LPCTSTR pTitle,UINT nType)
@@ -80,6 +138,8 @@ void __stdcall NativeInjectionEntryPoint(REMOTE_ENTRY_INFO* inRemoteInfo)
 	// Perform hooking
 	HOOK_TRACE_INFO hHook = { NULL }; // keep track of our hook
 	HOOK_TRACE_INFO hHookMessageBoxW = { NULL }; // keep track of our hook
+	HOOK_TRACE_INFO hHookSend = { NULL }; // keep track of our hook
+
 	std::cout << "\n";
 	std::cout << "NativeInjectionEntryPoint: Win32 Beep found at address: " << GetProcAddress(GetModuleHandle(TEXT("kernel32")), "Beep") << "\n";
 
@@ -112,13 +172,30 @@ void __stdcall NativeInjectionEntryPoint(REMOTE_ENTRY_INFO* inRemoteInfo)
 	{
 		std::cout << "NativeInjectionEntryPoint: Hook 'myBeepHook installed successfully.\n";
 	}
+	result = LhInstallHook(
+		GetProcAddress(GetModuleHandle(TEXT("Ws2_32.dll")), "send"),
+		mySocketHook,
+		NULL,
+		&hHookSend);
+	if (FAILED(result))
+	{
+		std::wstring s(RtlGetLastErrorString());
+		std::wcout << "NativeInjectionEntryPoint: Failed to install hook: " << s << "\n";
+	}
+	else
+	{
+		std::cout << "NativeInjectionEntryPoint: Hook 'myBeepHook installed successfully.\n";
+	}
+	
 	// If the threadId in the ACL is set to 0,
 	// then internally EasyHook uses GetCurrentThreadId()
 	ULONG ACLEntries[1] = { 0 };
 
 	// Disable the hook for the provided threadIds, enable for all others
 	LhSetExclusiveACL(ACLEntries, 1, &hHook);
+	LhSetExclusiveACL(ACLEntries, 1, &hHookSend);
 	LhSetExclusiveACL(ACLEntries, 1, &hHookMessageBoxW);
 
+	//pSendDataFile = 
 	return;
 }
