@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Inject
 		{0F523B72-2074-43E7-8B7C-EA121DEFD8B1} = {0F523B72-2074-43E7-8B7C-EA121DEFD8B1}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "Lua\Lua.vcxproj", "{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -97,12 +99,20 @@ Global
 		{B62DC3B7-C9D9-4D73-94AB-2C64ABBF5D71}.Release|Win32.ActiveCfg = Release|Win32
 		{B62DC3B7-C9D9-4D73-94AB-2C64ABBF5D71}.Release|Win32.Build.0 = Release|Win32
 		{B62DC3B7-C9D9-4D73-94AB-2C64ABBF5D71}.Release|x64.ActiveCfg = Release|Win32
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Debug|Win32.Build.0 = Debug|Win32
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Debug|x64.ActiveCfg = Debug|x64
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Debug|x64.Build.0 = Debug|x64
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Release|Win32.ActiveCfg = Release|Win32
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Release|Win32.Build.0 = Release|Win32
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Release|x64.ActiveCfg = Release|x64
+		{689A8A67-6D0F-4D01-9CDE-AA0E69689E5C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.12.1-2017_32
 		SolutionGuid = {571D6A8A-B0B3-4E42-A3E9-1E7603DF7489}
+		Qt5Version = 5.12.1-2017_32
 	EndGlobalSection
 EndGlobal
