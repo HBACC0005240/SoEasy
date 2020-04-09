@@ -103,8 +103,12 @@ public:
 	static char* ReadMemoryStrFromWnd(HWND hwnd,const char* szAddress,const char* offset1, const char* offset2, const char* offset3, const char* offset4);
 	static char* ReadMemoryStrFromWnd(HWND hwnd, const char* szAddress,int nLen);
 	static char* ReadMemoryStrFromProcessID(DWORD processID, const char* szAddress, int nLen);
+	static char* ReadMemoryStrFromProcessID(DWORD processID, DWORD pAddress, int nLen);
+
 	static int   ReadMemoryIntFromWnd(HWND hwnd,const char* szAddress);
 	static int   ReadMemoryIntFromProcessID(DWORD processID, const char* szAddress);
+	static int   ReadMemoryIntFromProcessID(DWORD processID, DWORD pAddress);
+
 	static void  WriteMemoryIntToWnd(HWND hwnd, const char* szAddress,int nVal);
 	static void  WriteMemoryIntToProcess(DWORD hProcessID, const char* szAddress, int nVal);
 	static long  ForceOpenProcess(DWORD dwDesiredAccess, bool bInhert, DWORD ProcessId);

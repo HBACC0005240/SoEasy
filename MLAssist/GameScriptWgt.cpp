@@ -20,11 +20,53 @@ GameScriptWgt::GameScriptWgt(QWidget *parent)
 	ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
 	//	ui.tableWidget->horizontalHeader()->setFixedHeight(30);
 	ui.tableWidget->setColumnWidth(0, 30);
+	ui.tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(&FZParseScript::getInstance(),SIGNAL(updateScriptRow(int)),this,SLOT(doUpdateScriptRow(int)));
+	connect(ui.tableWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(on_customContextMenu(const QPoint&)));
+	connect(&FZParseScript::getInstance(), SIGNAL(refreshScriptUI()), this, SLOT(onUpdateUI()));
+
+	
 
 }
 
 GameScriptWgt::~GameScriptWgt()
 {
+}
+void GameScriptWgt::on_customContextMenu(const QPoint& pos)
+{
+	QTableWidgetItem* tempitem = ui.tableWidget->itemAt(pos);
+	if (tempitem != NULL)
+	{
+		m_currentRow = ui.tableWidget->row(tempitem);   //
+		QMenu menu;
+		menu.addAction(QString("Ìøµ½"), this, SLOT(gotoScriptRow()));
+		menu.exec(QCursor::pos());
+	}
+}
+
+
+void GameScriptWgt::gotoScriptRow()
+{
+	FZParseScript::getInstance().SetScriptRunRow(m_currentRow);
+}
+
+void GameScriptWgt::onUpdateUI()
+{
+	if (FZParseScript::getInstance().GetGameScriptCtrlStatus() == FZParseScript::SCRIPT_CTRL_PAUSE)
+	{		
+		ui.pushButton_pause->setText("¼ÌÐø");
+	}
+	else if(FZParseScript::getInstance().GetGameScriptCtrlStatus() == FZParseScript::SCRIPT_CTRL_RUN)
+	{
+		ui.pushButton_pause->setText("ÔÝÍ£");
+		ui.pushButton_start->setEnabled(false);
+	}
+	else if (FZParseScript::getInstance().GetGameScriptCtrlStatus() == FZParseScript::SCRIPT_CTRL_STOP)
+	{
+		ui.pushButton_pause->setText("ÔÝÍ£");
+		ui.pushButton_start->setEnabled(true);
+	}
+
 }
 
 void GameScriptWgt::initTableWidget()
@@ -56,11 +98,16 @@ void GameScriptWgt::initTableWidget()
 
 void GameScriptWgt::on_pushButton_pause_clicked()
 {
-	if(FZParseScript::getInstance().GetGameScriptCtrlStatus()== FZParseScript::SCRIPT_CTRL_PAUSE)
+	if (FZParseScript::getInstance().GetGameScriptCtrlStatus() != FZParseScript::SCRIPT_CTRL_PAUSE)
+	{
 		FZParseScript::getInstance().PauseScript();
+		ui.pushButton_pause->setText("¼ÌÐø");
+	}
 	else
+	{
 		FZParseScript::getInstance().RunScript();
-
+		ui.pushButton_pause->setText("ÔÝÍ£");
+	}
 }
 
 void GameScriptWgt::on_pushButton_open_clicked()
@@ -68,6 +115,10 @@ void GameScriptWgt::on_pushButton_open_clicked()
 	QString szPath = QFileDialog::getOpenFileName(this,QString::fromLocal8Bit("´ò¿ª"), "./", "*.script");
 	if (szPath.isEmpty())
 		return;
+	FZParseScript::getInstance().StopScript();
+	ui.pushButton_start->setEnabled(true);
+	ui.pushButton_pause->setText("ÔÝÍ£");
+
 	FZParseScript::getInstance().ParseGameScript(szPath);
 	ui.textEdit->setText(FZParseScript::getInstance().getGameDescript());
 	initTableWidget();
@@ -78,15 +129,27 @@ void GameScriptWgt::on_pushButton_openEncrypt_clicked()
 	QString szPath = QFileDialog::getOpenFileName(this, QString::fromLatin1("´ò¿ª"), "./", "*.script");
 	if (szPath.isEmpty())
 		return;
+	FZParseScript::getInstance().StopScript();
+	ui.pushButton_start->setEnabled(true);
+	ui.pushButton_pause->setText("ÔÝÍ£");
 	FZParseScript::getInstance().ParseGameScript(szPath);
 }
 
 void GameScriptWgt::on_pushButton_start_clicked()
 {
 	FZParseScript::getInstance().RunScript();
+	ui.pushButton_start->setEnabled(false);
 }
 
 void GameScriptWgt::on_pushButton_stop_clicked()
 {
 	FZParseScript::getInstance().StopScript();
+	ui.pushButton_start->setEnabled(true);
+}
+
+void GameScriptWgt::doUpdateScriptRow(int row)
+{
+	m_currentRow = row;
+	ui.tableWidget->selectRow(row);
+//	ui.tableWidget->setCurrentCell(row,0);
 }

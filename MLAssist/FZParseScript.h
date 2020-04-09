@@ -40,11 +40,17 @@ public:
 	bool moveto(const QString& szData);
 	bool turn_about(const QString& szData);
 	bool high(const QString& szData);
+	bool work(const QString& szData);
+	bool renew(const QString& szData);
+
 	QString MidBrackets(const QString& szData);
 	void ParseInputVal(const QString& szData);
 
 	void ParseIFCmd(const QString& szData);
 	static void RunScriptThread(FZParseScript* pThis);
+signals:
+	void updateScriptRow(int nRow);
+	void refreshScriptUI();
 private:
 //	QMap<int, QString> m_script;
 	QString m_szScriptDesc;	//Ω≈±æ√Ë ˆ–≈œ¢

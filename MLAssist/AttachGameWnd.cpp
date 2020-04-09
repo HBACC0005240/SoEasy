@@ -25,6 +25,7 @@ void AttachGameWnd::on_pushButton_attach_clicked()
 	GameData::getInstance().setGameProcess(gameProcessID);
 	GameData::getInstance().setGameHwnd(gameHwnd);
 	GameData::getInstance().setGameHDC(gameHDC);
+	GameData::getInstance().initData();
 	emit g_pGameCtrl->signal_activeGameFZ();
 	g_pGameCtrl->StartUpdateTimer();
 }

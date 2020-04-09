@@ -45,11 +45,11 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>5.14.0-msvc2017_64</QtInstall>
+    <QtInstall>5.14.2-msvc2017</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>5.14.0-msvc2017_64</QtInstall>
+    <QtInstall>5.14.2-msvc2017</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">

@@ -13,8 +13,8 @@ GameDataWgt::GameDataWgt(QWidget *parent)
 	connect(g_pGameCtrl,SIGNAL(signal_updateGameStatus()),this,SLOT(doUpdateGameData()));
 	connect(g_pGameCtrl, SIGNAL(signal_activeGameFZ()), this, SLOT(Active()));
 
-	ui.tableWidget->setRowCount(10);
-	for (int i = 0; i < 10; ++i)
+	ui.tableWidget->setRowCount(16);
+	for (int i = 0; i < 16; ++i)
 	{
 		for (size_t n = 0; n < 5; n++)
 		{
@@ -31,6 +31,8 @@ GameDataWgt::GameDataWgt(QWidget *parent)
 	ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
 	//	ui.tableWidget->horizontalHeader()->setFixedHeight(30);
 	ui.tableWidget->setColumnWidth(1, 130);
+	ui.tableWidget->verticalHeader()->setDefaultSectionSize(15);
+
 	//	ui.tableWidget->resizeColumnsToContents();//根据内容调整列宽 但每次都变 太麻烦 修改下
 	memset(m_Infos, 0, sizeof(PERSONINFO) * 20);
 }
@@ -95,7 +97,22 @@ void GameDataWgt::Active()
 	int nGold = YunLai::ReadMemoryIntFromProcessID(GameData::getInstance().getGamePID(), "00E2A4BC");
 	setItemText(9, 1, QString("钱:%1").arg(nGold));
 
-	char* skill = YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), "00D84FEC", 100);
+	QMap<int, QString> indexForName;
+	for (int i = 0;i < 10;++i)//10个技能栏
+	{
+		DWORD pAddress = 0x00D84FEC;
+		DWORD offset = i * 0x49FC;
+		pAddress += offset;
+		QString skillName = QString::fromWCharArray(ANSITOUNICODE1(YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), pAddress, 100)));
+		pAddress += 0x38;
+		int nShowIndex = YunLai::ReadMemoryIntFromProcessID(GameData::getInstance().getGamePID(), pAddress);
+		indexForName.insert(nShowIndex, skillName);
+	}
+	for (auto it = indexForName.begin();it != indexForName.end();++it)
+	{
+		setItemText(it.key()-1,2,it.value());
+	}
+	/*char* skill = YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), "00D84FEC", 100);
 	QString qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
 	setItemText(0, 2, qSkill);
 	skill = YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), "00D899E8", 100);
@@ -124,7 +141,7 @@ void GameDataWgt::Active()
 	setItemText(8, 2, qSkill);
 	skill = YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), "DAE9C8", 100);
 	qSkill = QString::fromWCharArray(ANSITOUNICODE1(skill));
-	setItemText(9, 2, qSkill);
+	setItemText(9, 2, qSkill);*/
 }
 
 void GameDataWgt::doUpdateGameData()
@@ -136,14 +153,14 @@ void GameDataWgt::doUpdateGameData()
 	GameData::getInstance().readBattleInfo();
 	GameData::getInstance().getPersonInfo(m_Infos);
 	refreshBattleUI();
-	return;
-	//POINT pi;
-	//::GetCursorPos(&pi);
+//	return;
+	POINT pi;
+	::GetCursorPos(&pi);
 	//DWORD srcColorVal = GetPixel(m_screenHDC, pi.x, pi.y);
-	//qDebug() << "屏幕坐标 颜色" << pi.x << pi.y << srcColorVal;
-	//::ScreenToClient(m_gameHwnd, &pi);
-	//DWORD colorVal = GetPixel(m_gameHDC, pi.x, pi.y);
-	//qDebug() << "游戏坐标 颜色" << pi.x << pi.y << colorVal << GetRValue(colorVal) << GetGValue(colorVal) << GetBValue(colorVal);
+//	qDebug() << "屏幕坐标 颜色" << pi.x << pi.y << srcColorVal;
+	::ScreenToClient(GameData::getInstance().getGameHwnd(), &pi);
+	DWORD colorVal = GetPixel(GameData::getInstance().getGameHDC(), pi.x, pi.y);
+	qDebug() << "游戏坐标 颜色" << pi.x << pi.y << colorVal << GetRValue(colorVal) << GetGValue(colorVal) << GetBValue(colorVal);
 	/*DWORD capColor = YunLai::GetScreenColorCapture(pi.x,pi.y,m_gameHwnd);
 	qDebug() << "截图取色 颜色" << pi.x << pi.y << capColor;*/
 	
@@ -151,7 +168,8 @@ void GameDataWgt::doUpdateGameData()
 void GameDataWgt::setItemText(int row, int col, const QString& szText)
 {
 	QTableWidgetItem* pItem = ui.tableWidget->item(row, col);
-	pItem->setText(szText);
+	if(pItem)
+		pItem->setText(szText);
 }
 
 void GameDataWgt::refreshBattleUI()

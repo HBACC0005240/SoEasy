@@ -71,6 +71,7 @@ void FZParseScript::SetScriptRunRow(int nRow)
 
 bool FZParseScript::RunScript()
 {
+	m_scriptRunRow = 0;
 	//解析指令
 	if (m_scriptDataList.size() < 1)
 		return false;
@@ -125,6 +126,13 @@ void FZParseScript::ParseSet(const QString& szData)
 	}else if (args.size() == 3)
 	{
 
+	}
+	else if (args.size() == 13)
+	{
+		if (args[0].contains("人物开关"))
+		{
+			GameData::getInstance().SetCharacterSwitch(args[2].toInt(), args[4].toInt(), args[6].toInt(), args[8].toInt(), args[10].toInt(), args[12].toInt());
+		}
 	}
 }
 
@@ -185,6 +193,14 @@ bool FZParseScript::nowhile(const QString& szData)
 			Sleep(m_tScriptTimerInterval);
 		}
 	}
+	else if (args.size() == 1)
+	{
+		if (args[0] == "renew")
+		{
+			GameData::getInstance().selectRenew();
+		}
+	}
+
 	return true;
 }
 
@@ -263,6 +279,51 @@ bool FZParseScript::high(const QString& szData)
 	return true;
 }
 
+bool FZParseScript::work(const QString& szData)
+{
+	QString szScript = MidBrackets(szData);
+	szScript = szScript.remove("\"");
+	QStringList args = szScript.split(",");
+	if (args.size() == 2)
+	{		
+		while(1)
+		{			
+			if (GameData::getInstance().isWorking() == false)
+			{
+				GameData::getInstance().Work(args.at(0), args.at(1));
+				Sleep(m_tScriptTimerInterval);
+			}
+			else
+				break;
+		}
+	}
+	else if (args.size() == 1)//打开关闭图标 暂时没实现
+	{
+
+	}
+	return true;
+}
+
+bool FZParseScript::renew(const QString& szData)
+{
+	QString szScript = MidBrackets(szData);
+	QStringList args = szScript.split(",");
+	if (args.size() != 1)
+		return false;
+	int direction = args.at(0).toInt();
+	GameData::getInstance().turn_about(direction);
+	int nHp = GameData::getInstance().getPersionHP();
+	int nMp = GameData::getInstance().getPersionMP();
+	GameData::getInstance().selectRenew();
+	int nRenewHp = GameData::getInstance().getPersionHP();
+	int nRenewMp = GameData::getInstance().getPersionMP();
+	if (nHp == nRenewHp && nMp == nRenewMp)
+	{
+		renew(szData);//递归
+	}
+	return true;
+}
+
 QString FZParseScript::MidBrackets(const QString& szData)
 {
 	QString szScript = szData.mid(szData.indexOf("(") + 1);
@@ -302,6 +363,63 @@ void FZParseScript::ParseIFCmd(const QString& szData)
 				}
 			}
 		}
+		else if (args[1].contains("Character._health"))//人物健康
+		{
+
+		}
+		else if (args[1].contains("Character._loc"))//位置
+		{
+			if (args[2] == "=")
+			{//判断当前坐标
+				QString curMap = GameData::getInstance().GetGameMapName();
+				//如果是判断坐标 则x y是两个参数 拆分根据,逗号拆分 是6个数据
+				if (curMap == args[3])
+				{//跳转
+					int nRow = m_mark.key(args[4]);
+					m_scriptRunRow = nRow;
+				}
+			}
+		}
+	}else if (args[0].contains("人"))
+	{
+		if (args[1].contains("血"))
+		{
+			if (args[2] == "<")
+			{
+				int nSetHp = args[3].toInt();
+				int nHp = GameData::getInstance().getPersionHP();
+				if (nHp < nSetHp)
+				{
+					//跳转
+					int nRow = m_mark.key(args[4]);
+					m_scriptRunRow = nRow;
+				}				
+			}
+		}
+		else if (args[1].contains("魔"))
+		{
+			if (args[2] == "<")
+			{
+				int nSetMp = args[3].toInt();
+				int nMp = GameData::getInstance().getPersionMP();
+				if (nMp < nSetMp)
+				{
+					//跳转
+					int nRow = m_mark.key(args[4]);
+					m_scriptRunRow = nRow;
+				}
+			}
+		}
+	}
+	else if (args[0].contains("宠"))
+	{
+		if (args[1].contains("血"))
+		{
+		}
+		else if (args[1].contains("魔"))
+		{
+
+		}
 	}
 }
 
@@ -313,6 +431,12 @@ void FZParseScript::RunScriptThread(FZParseScript* pThis)
 		{
 			Sleep(pThis->m_tScriptTimerInterval);
 			continue;
+		}
+		if (pThis->m_scriptRunRow > (pThis->m_scriptDataList.size() - 1))
+		{
+			pThis->m_scriptCtrl = SCRIPT_CTRL_STOP;
+			emit pThis->refreshScriptUI();
+			return;
 		}
 		QString szScriptData = pThis->m_scriptDataList.at(pThis->m_scriptRunRow);		
 		szScriptData = szScriptData.simplified();//去掉所有空格
@@ -355,7 +479,12 @@ void FZParseScript::RunScriptThread(FZParseScript* pThis)
 		{
 			pThis->nowhile(szScriptData);
 		}
+		else if (szScriptData.startsWith("Work("))
+		{
+			pThis->work(szScriptData);
+		}
 		pThis->m_scriptRunRow = pThis->m_scriptRunRow + 1;
+		emit pThis->updateScriptRow(pThis->m_scriptRunRow);
 		Sleep(pThis->m_tScriptTimerInterval);
 
 	}

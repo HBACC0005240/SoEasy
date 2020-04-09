@@ -5,7 +5,7 @@ static LPWSTR ANSITOUNICODE1(const char* pBuf)
 {
 	int lenA = lstrlenA(pBuf);
 	int lenW=0;
-	LPWSTR lpszFile;
+	LPWSTR lpszFile=nullptr;
 	lenW = MultiByteToWideChar(CP_ACP,0,pBuf,lenA,0,0);
 	if(lenW > 0)
 	{
