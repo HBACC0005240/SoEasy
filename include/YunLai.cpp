@@ -379,6 +379,19 @@ char* YunLai::ReadMemoryStrFromProcessID(DWORD processID, const char* szAddress,
 //	qDebug()<<processID << szAddress << pLen << bRet << pAddress;
 	return pLen;
 }
+
+char* YunLai::ReadMemoryStrFromProcessID(DWORD processID, DWORD pAddress, int nLen)
+{
+	bool bRet = false;
+	char pLen[MAX_MEMORY_TEXT_SIZE] = "";
+	if (nLen > MAX_MEMORY_TEXT_SIZE)
+		bRet = ReadProcessMemory(OpenProcess(PROCESS_ALL_ACCESS, 0, processID), (LPCVOID)pAddress, pLen, MAX_MEMORY_TEXT_SIZE, 0);
+	else
+		bRet = ReadProcessMemory(OpenProcess(PROCESS_ALL_ACCESS, 0, processID), (LPCVOID)pAddress, pLen, nLen, 0);
+	//	qDebug()<<processID << szAddress << pLen << bRet << pAddress;
+	return pLen;
+}
+
 char* YunLai::ReadMemoryStrFromWnd(HWND hwnd, const char* szAddress, int nLen)
 {
 	DWORD hProcessID = GetProcessIDFromWnd(hwnd);
@@ -428,6 +441,14 @@ int YunLai::ReadMemoryIntFromProcessID(DWORD processID, const char* szAddress)
 	LPCVOID pAddress = (LPCVOID)strtoul(szAddress, NULL, 16);
 	int memoryData = 0;
 	bool bRet = ReadProcessMemory(OpenProcess(PROCESS_ALL_ACCESS, 0, processID), pAddress, &memoryData, 4, 0);
+	//qDebug() << processID << szAddress << memoryData << bRet << pAddress;
+	return memoryData;
+}
+
+int YunLai::ReadMemoryIntFromProcessID(DWORD processID, DWORD pAddress)
+{
+	int memoryData = 0;
+	bool bRet = ReadProcessMemory(OpenProcess(PROCESS_ALL_ACCESS, 0, processID), (LPCVOID)pAddress, &memoryData, 4, 0);
 	//qDebug() << processID << szAddress << memoryData << bRet << pAddress;
 	return memoryData;
 }

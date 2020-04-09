@@ -18,6 +18,11 @@ public slots:
 	void on_pushButton_openEncrypt_clicked();
 	void on_pushButton_start_clicked();
 	void on_pushButton_stop_clicked();
+	void doUpdateScriptRow(int row);
+	void on_customContextMenu(const QPoint& pos);
+	void gotoScriptRow();
+	void onUpdateUI();
 private:
 	Ui::GameScriptWgt ui;
+	int m_currentRow;
 };

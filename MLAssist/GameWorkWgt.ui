@@ -31,11 +31,11 @@
      <attribute name="horizontalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>49</number>
-     </attribute>
      <attribute name="horizontalHeaderMinimumSectionSize">
       <number>25</number>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>49</number>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
@@ -374,7 +374,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="comboBox"/>
+               <widget class="QComboBox" name="comboBox_skill"/>
               </item>
               <item>
                <widget class="QLabel" name="label_8">
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_8">
+               <widget class="QPushButton" name="pushButton_useSkill">
                 <property name="text">
                  <string>开始</string>
                 </property>

@@ -1,6 +1,10 @@
 #pragma once
 #include <windows.h>
 #include <QString>
+#include <QMap>
+#include <QStringList>
+#include "XASM.h"
+
 #define GAME_X "0092BD28"
 #define GAME_Y "0092BD30"
 #define GAME_MOVE_X "008E543C"
@@ -29,6 +33,14 @@ enum MOVE_DIRECTION
 	MOVE_DIRECTION_LEFTDOWN = 6,
 	MOVE_DIRECTION_RIGHTDOWN = 4,
 };
+enum CHARACTER_STATE {
+	CHARACTER_Troop = 1,		//队
+	CHARACTER_Battle = 4,		//战
+	CHARACTER_Chat = 8,		//聊
+	CHARACTER_Card = 16,		//名
+	CHARACTER_Exchange = 32,	//易
+	CHARACTER_Home = 64,		//家
+};
 struct PERSONINFO
 {
 	WCHAR name[MAXBUFLEN];	//名称
@@ -43,6 +55,7 @@ class GameData
 public:
 	static GameData& getInstance();
 
+	void initData();
 	void setGameProcess(DWORD pid) { m_gameProcessID = pid; }
 	void setGameHwnd(HWND pHwnd) { m_gameHwnd = pHwnd; }
 	void setGameHDC(HDC pHdc) { m_gameHDC = pHdc; }
@@ -62,6 +75,16 @@ public:
 
 	bool WaitToMove(int x, int y);
 	void JianDongXi(int nDirection);
+	void Work(int code,const QString itemName="");//使用技能
+	void Work(const QString& skillName, const QString itemName = "");
+	bool isWorking();	//是否采集中
+//	static void RemoteWorkCall();
+//	void Work(int code);		//打开开关
+	bool transAssemble(void* pAddr, BYTE* buf,int nLen,QStringList szCmdList);
+	void selectRenew();
+	void SetCharacterState(int state);
+	void SetCharacterSwitch(int v1,int v2,int v3,int v4,int v5,int v6);
+
 private:
 	DWORD m_gameProcessID;
 	HWND m_gameHwnd;	//游戏窗口句柄
@@ -69,5 +92,11 @@ private:
 	HDC m_screenHDC;
 	//战斗时每个位置的信息状态
 	PERSONINFO m_Infos[20];
+	QMap<int, int>  m_skillCodeForIndex;	//自定义技能指令代码和实际下标映射
+	QMap<int, QString> m_indexForSkillName;	//数组下标对应技能名称
+	QStringList m_szPickSkillList;
+	XASM m_asm;
+	QMap<int, int> m_skillCodeForMyCode;//游戏定义的code和自定义code对应
+	QMap<QString, int> m_characterForVal;	//游戏人物状态名称和实际内存值
 };
 
