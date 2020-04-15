@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MLFZ", "MLFZ\MLFZ.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsmManual", "AsmManual\AsmManual.vcxproj", "{3AFF547B-3798-4324-ACC7-1D2DCBD4BA75}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QingFengGJ", "QingFengGJ\QingFengGJ.vcxproj", "{7AB10781-E39C-45A6-9A19-67860C48F37B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -102,12 +104,20 @@ Global
 		{3AFF547B-3798-4324-ACC7-1D2DCBD4BA75}.Release|Win32.ActiveCfg = Release|Win32
 		{3AFF547B-3798-4324-ACC7-1D2DCBD4BA75}.Release|Win32.Build.0 = Release|Win32
 		{3AFF547B-3798-4324-ACC7-1D2DCBD4BA75}.Release|x64.ActiveCfg = Release|Win32
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Debug|Win32.Build.0 = Debug|Win32
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Debug|x64.ActiveCfg = Debug|x64
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Debug|x64.Build.0 = Debug|x64
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Release|Win32.ActiveCfg = Release|Win32
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Release|Win32.Build.0 = Release|Win32
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Release|x64.ActiveCfg = Release|x64
+		{7AB10781-E39C-45A6-9A19-67860C48F37B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {571D6A8A-B0B3-4E42-A3E9-1E7603DF7489}
 		Qt5Version = 5.14.2-msvc2017
+		SolutionGuid = {571D6A8A-B0B3-4E42-A3E9-1E7603DF7489}
 	EndGlobalSection
 EndGlobal
