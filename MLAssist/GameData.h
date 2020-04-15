@@ -50,6 +50,15 @@ struct PERSONINFO
 	int totalmp;			//总魔力
 	int level;				//等级
 };
+class GameItem
+{
+public:
+	QString itemName;//名称
+	QString itemId;	//id
+	int itemCount;	//数量
+	int index;		//位置
+};
+typedef QList<GameItem*> GameItemList;
 class GameData
 {
 public:
@@ -84,7 +93,8 @@ public:
 	void selectRenew();
 	void SetCharacterState(int state);
 	void SetCharacterSwitch(int v1,int v2,int v3,int v4,int v5,int v6);
-
+	void Ren(const QString& itemName);
+	void Ren(int nIndex);
 private:
 	DWORD m_gameProcessID;
 	HWND m_gameHwnd;	//游戏窗口句柄

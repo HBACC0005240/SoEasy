@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include "GlobalDefine.h"
 #include "../include/XASM.h"
+#include <QDebug>
 //#include "../include/XEDParse.h"
 //#include "./asmjit/asmjit.h"
 //using namespace asmjit;
@@ -329,9 +330,19 @@ __declspec(naked) void  RemoteWorkCall()
 		ret
 	}
 }
-
-
- //提升进程访问权限   
+//__declspec(naked) void plant1(void)
+//{
+//	__asm
+//	{
+//		mov eax, 0
+//		mov ecx, 0
+//		mov edx, 0x00462EF8
+//		call edx
+//		ret
+//	}
+//}
+//
+// //提升进程访问权限   
  bool EnableDebugPriv()
  {
 	 HANDLE hToken;
@@ -359,20 +370,20 @@ __declspec(naked) void  RemoteWorkCall()
  }
 void GameData::Work(int code, const QString itemName/*=""*/)
 {
-	// TODO: 在此添加控件通知处理程序代码
-	DWORD byWrite;
-	//游戏进程句柄
-	EnableDebugPriv();//提升进程权限 VS2008以后的版本才需要
-	HANDLE hp = OpenProcess(PROCESS_ALL_ACCESS, false, m_gameProcessID);
-	//在目标进程分配内存空间 以方便写入要执行的代码
-	PVOID FarCall = VirtualAllocEx(hp, NULL, 0x8FFF, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	//向目标进程的 目标地址写入我们要执行的代码 
-	WriteProcessMemory(hp, FarCall, RemoteWorkCall, 0x8FFF, &byWrite);
-	//在目标进程 指定地址 执行代码
-	//TRACE("\n addr=%x \n", FarCall);
-	CreateRemoteThread(hp, NULL, NULL, (LPTHREAD_START_ROUTINE)FarCall, NULL, NULL, NULL);
+	//// TODO: 在此添加控件通知处理程序代码
+	//DWORD byWrite;
+	////游戏进程句柄
+	//EnableDebugPriv();//提升进程权限 VS2008以后的版本才需要
+	//HANDLE hp = OpenProcess(PROCESS_ALL_ACCESS, false, m_gameProcessID);
+	////在目标进程分配内存空间 以方便写入要执行的代码
+	//PVOID FarCall = VirtualAllocEx(hp, NULL, 0x8FFF, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	////向目标进程的 目标地址写入我们要执行的代码 
+	//WriteProcessMemory(hp, FarCall, plant1, 0x8FFF, &byWrite);
+	////在目标进程 指定地址 执行代码
+	//qDebug() << QString::number((DWORD)FarCall, 16);
+	////TRACE("\n addr=%x \n", FarCall);
+	//CreateRemoteThread(hp, NULL, NULL, (LPTHREAD_START_ROUTINE)FarCall, NULL, NULL, NULL);
 
-	return;
 	//value1 = 101 鉴定
 	//value1 = 201 变身鉴定
 	//value1 = 102 挖掘
@@ -402,13 +413,13 @@ void GameData::Work(int code, const QString itemName/*=""*/)
 		<< "mov ecx, 0"
 		<< "mov edx, 0x00462EF8"
 		<< "call edx";
-	/*bool bTAssable=transAssemble(callBase,buf, nThreadSize, szAssemble);
+	bool bTAssable=transAssemble(callBase,buf, nThreadSize, szAssemble);
 	if (bTAssable == false)
-		return;*/
+		return;
 	//DWORD  nWirteSize = ((DWORD)RemoteWorkCallEnd - (DWORD)RemoteWorkCall);
 	//WriteProcessMemory(hp, FarCall, plant1, 0x8FFF, &byWrite);
-	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)RemoteWorkCall, nThreadSize, 0);
-//	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)buf, nThreadSize, nullptr);
+//	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)RemoteWorkCall, nThreadSize, 0);
+	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)buf, nThreadSize, nullptr);
 //	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)RemoteWorkCall, 4096, nullptr);
 	if (bRet == false)
 	{
@@ -422,8 +433,10 @@ void GameData::Work(int code, const QString itemName/*=""*/)
 		QMessageBox::information(nullptr, "提示：", "远程调用代码失败", QMessageBox::Ok);
 		return;
 	}
-	/*CloseHandle(hRemoteThread);
-	CloseHandle(hProcess);*/
+	WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
+	VirtualFreeEx(hProcess, callBase, 0x8FFF, MEM_DECOMMIT);
+	CloseHandle(hRemoteThread);
+	CloseHandle(hProcess);
 }
 
 void GameData::Work(const QString& skillName, const QString itemName /*= ""*/)
@@ -542,6 +555,62 @@ void GameData::SetCharacterSwitch(int v1, int v2, int v3, int v4, int v5, int v6
 		nVal += CHARACTER_Home;
 	YunLai::WriteMemoryIntToProcess(m_gameProcessID, "00E2A554", nVal);
 
+}
+
+void GameData::Ren(const QString& itemName)
+{
+	
+}
+
+void GameData::Ren(int nIndex)
+{	
+	EnableDebugPriv();
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_gameProcessID);
+	DWORD nThreadSize = 0x8FFF;
+	LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
+	if (callBase == nullptr)
+	{
+		QMessageBox::information(nullptr, "提示：", "申请空间失败", QMessageBox::Ok);
+		return;
+	}
+	BYTE buf[300] = { 0 };
+	QStringList szAssemble;
+	szAssemble << QString("mov ecx, 0x%1").arg(nIndex,0,16)
+		<< "mov dword ptr ds:[0x53B064],ecx"
+		<< "push 0x004689C0"
+		<< "push ecx"
+		<< "push 0x2"
+		<< "call 0x00456A70"
+		<< "add esp,0xC"
+		<< QString("mov edx, 0x%1").arg(nIndex, 0, 16)
+		<< "push edx"
+		<< "push 0"
+		<< "push 2"
+		<< "call 0x004689c0"
+		<< "add esp, 0xC"
+		<< "ret";
+	
+	bool bTAssable = transAssemble(callBase, buf, nThreadSize, szAssemble);
+	if (bTAssable == false)
+		return;
+	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)buf, nThreadSize, nullptr);
+	if (bRet == false)
+	{
+		int nEroCode = GetLastError();
+		QMessageBox::information(nullptr, "提示：", "写入代码失败", QMessageBox::Ok);
+		return;
+	}
+	DWORD tId;
+	HANDLE hRemoteThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)callBase, NULL, 0, &tId);
+	if (hRemoteThread == nullptr)
+	{
+		QMessageBox::information(nullptr, "提示：", "远程调用代码失败", QMessageBox::Ok);
+		return;
+	}
+	WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
+	VirtualFreeEx(hProcess, callBase, 0x8FFF, MEM_DECOMMIT);
+	CloseHandle(hRemoteThread);
+	CloseHandle(hProcess);
 }
 
 void GameData::readBattleInfo()

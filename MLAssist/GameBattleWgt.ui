@@ -60,7 +60,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButton_loadCfg">
        <property name="maximumSize">
         <size>
          <width>70</width>
@@ -73,7 +73,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButton_saveCfg">
        <property name="maximumSize">
         <size>
          <width>70</width>

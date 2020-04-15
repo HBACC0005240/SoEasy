@@ -40,7 +40,7 @@ void AttachGameWnd::on_pushButton_refresh_clicked()
 		if (it.value().contains("qfmoli"))
 		{
 			QString szLoginUser = YunLai::ReadMemoryStrFromProcessID(it.key(), "00E39EE4", 100);
-			QListWidgetItem* pItem = new QListWidgetItem(QString("%1 %2 %3").arg(it.key()).arg(it.value()).arg(szLoginUser));
+			QListWidgetItem* pItem = new QListWidgetItem(QString("%1 %2 %3").arg(it.key()).arg(it.value()).arg(""));//szLoginUser));
 			pItem->setData(Qt::UserRole, it.key());
 			ui.listWidget->addItem(pItem);
 		}

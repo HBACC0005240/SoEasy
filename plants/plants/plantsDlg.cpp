@@ -206,7 +206,7 @@ HANDLE GetGameProcessHanlde()
 	//GetWindowThreadProcessId
 	//OpenProcss
 	EnableDebugPriv();//提升进程权限 VS2008以后的版本才需要
-	HANDLE hp=OpenProcess(PROCESS_ALL_ACCESS,false,5688);
+	HANDLE hp=OpenProcess(PROCESS_ALL_ACCESS,false,16704);
 	return hp;
 	//
 }

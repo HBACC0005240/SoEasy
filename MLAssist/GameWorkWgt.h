@@ -15,6 +15,7 @@ public:
 public slots:
 	void on_pushButton_useSkill_clicked();
 	void Active();
+	void doUpdateGameData();
 private:
 	Ui::GameWorkWgt ui;
 	QStringList m_szPickSkillList;

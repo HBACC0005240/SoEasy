@@ -5,6 +5,8 @@ GameWorkWgt::GameWorkWgt(QWidget *parent)
 {
 	ui.setupUi(this);
 	connect(g_pGameCtrl, SIGNAL(signal_activeGameFZ()), this, SLOT(Active()));
+	connect(g_pGameCtrl, SIGNAL(signal_updateGameStatus()), this, SLOT(doUpdateGameData()));
+
 	m_szPickSkillList <<"¼ø¶¨"<< "ÍÚ¿ó" << "·¥Ä¾" << "á÷ÁÔ" <<"ÐÞÀíÎäÆ÷"<<"ÐÞÀí·À¾ß"<< "ÍÚ¿óÌåÑé" << "·¥Ä¾ÌåÑé" << "á÷ÁÔÌåÑé";
 	
 }
@@ -48,4 +50,9 @@ void GameWorkWgt::on_pushButton_useSkill_clicked()
 void GameWorkWgt::Active()
 {
 	initSkillComboBox();
+}
+
+void GameWorkWgt::doUpdateGameData()
+{
+	g_pGameCtrl->ReadItemData();
 }

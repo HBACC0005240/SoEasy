@@ -108,6 +108,7 @@ public:
 	static int   ReadMemoryIntFromWnd(HWND hwnd,const char* szAddress);
 	static int   ReadMemoryIntFromProcessID(DWORD processID, const char* szAddress);
 	static int   ReadMemoryIntFromProcessID(DWORD processID, DWORD pAddress);
+	static WORD   ReadMemoryWordFromProcessID(DWORD processID, DWORD pAddress);
 
 	static void  WriteMemoryIntToWnd(HWND hwnd, const char* szAddress,int nVal);
 	static void  WriteMemoryIntToProcess(DWORD hProcessID, const char* szAddress, int nVal);

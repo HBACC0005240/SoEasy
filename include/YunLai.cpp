@@ -453,6 +453,14 @@ int YunLai::ReadMemoryIntFromProcessID(DWORD processID, DWORD pAddress)
 	return memoryData;
 }
 
+WORD YunLai::ReadMemoryWordFromProcessID(DWORD processID, DWORD pAddress)
+{
+	WORD memoryData = 0;
+	bool bRet = ReadProcessMemory(OpenProcess(PROCESS_ALL_ACCESS, 0, processID), (LPCVOID)pAddress, &memoryData, 2, 0);
+	//qDebug() << processID << szAddress << memoryData << bRet << pAddress;
+	return memoryData;
+}
+
 void YunLai::WriteMemoryIntToWnd(HWND hwnd, const char* szAddress, int nVal)
 {
 //	LPCVOID pAddress = (LPCVOID)strtoul(szAddress, NULL, 16);
