@@ -7,7 +7,7 @@
 #include "../include/ITPublic.h"
 #pragma comment(lib,"shlwapi.lib")
 #pragma comment(lib,"Psapi.lib")
-#include "LibApiImport.h"
+//#include "LibApiImport.h"
 static HWND m_lastHwnd = nullptr;
 #define FORMAT_PATH(path) path.replace('\\','/').toLower()
 
@@ -475,110 +475,110 @@ void YunLai::WriteMemoryIntToProcess(DWORD hProcessID, const char* szAddress, in
 	HANDLE hProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, hProcessID);
 	WriteProcessMemory(hProcessHandle, pAddress, &nVal, 4, 0);
 }
-
-long YunLai::ForceOpenProcess(DWORD dwDesiredAccess, bool bInhert,DWORD ProcessId)
-{
-	bool bRet = false;
-	POBJECT_ATTRIBUTES attribute;
-	memset(&attribute, 0, sizeof(POBJECT_ATTRIBUTES));
-	attribute->Length = 24;
-	if (bInhert)
-		attribute->Attributes = attribute->Attributes|2;
-	HANDLE hProcessHandle;
-	PCLIENT_ID clientID;
-	clientID->UniqueProcess =(HANDLE)(ProcessId + 1);
-    NTSTATUS openRet = ZwOpenProcess_Import()(&hProcessHandle, dwDesiredAccess, attribute, clientID);
-	if (openRet >= 0)
-		return openRet;
-	/*赋值(匿名局部变量_7587, 1)
-		.循环判断首()
-		赋值(匿名局部变量_7588, 取空白字节集(匿名局部变量_7587))
-		匿名子程序_27995(“ntdll.dll”, “ZwQuerySystemInformation”)
-		赋值(匿名局部变量_7592, ZwQuerySystemInformation_5853(16, 匿名局部变量_7588, 匿名局部变量_7587, 0))
-		.如果(等于(匿名局部变量_7592, #匿名常量_5852))
-		赋值(匿名局部变量_7587, 相乘(匿名局部变量_7587, 2))
-		赋值(匿名局部变量_7588, 取空白字节集(匿名局部变量_7587))
-		.否则
-		跳出循环()
-		.如果结束
-
-		.循环判断尾(等于(匿名局部变量_7592, #匿名常量_5852))
-		赋值(匿名局部变量_7589, lstrcpyn_1750(匿名局部变量_7588, 匿名局部变量_7588, 0))
-		RtlMoveMemory_5858(匿名局部变量_7578, 匿名局部变量_7589, 4)
-		赋值(匿名局部变量_7589, 相加(匿名局部变量_7589, 4))
-		.计次循环首(匿名局部变量_7578, 匿名局部变量_7580)
-		RtlMoveMemory_7672(匿名局部变量_7585, 匿名局部变量_7589, 16)
-		.如果真(等于(匿名局部变量_7585.匿名成员7654, #匿名常量_7677))
-		赋值(匿名局部变量_7576.匿名成员7635, 匿名局部变量_7585.匿名成员7652)
-		匿名子程序_27995(“ntdll.dll”, “ZwOpenProcess”)
-		赋值(匿名局部变量_7575, ZwOpenProcess_7665(匿名局部变量_7581, #匿名常量_1092, 匿名局部变量_7577, 匿名局部变量_7576))
-		.如果真(大于或等于(匿名局部变量_7575, 0))
-		匿名子程序_27995(“ntdll.dll”, “ZwDuplicateObject”)
-		赋值(匿名局部变量_7575, ZwDuplicateObject_7678(匿名局部变量_7581, 匿名局部变量_7585.匿名成员7656, #匿名常量_7686, 匿名局部变量_7582, #匿名常量_1096, 0, #匿名常量_7689))
-		.如果真(大于或等于(匿名局部变量_7575, 0))
-		匿名子程序_27995(“ntdll.dll”, “ZwQueryInformationProcess”)
-		赋值(匿名局部变量_7575, ZwQueryInformationProcess_7690(匿名局部变量_7582, 0, 匿名局部变量_7579, 24, 0))
-		.如果真(大于或等于(匿名局部变量_7575, 0))
-		.如果真(等于(匿名局部变量_7579.匿名成员7649, ProcessId))
-		匿名子程序_27995(“ntdll.dll”, “ZwDuplicateObject”)
-		赋值(匿名局部变量_7575, ZwDuplicateObject_7678(匿名局部变量_7581, 匿名局部变量_7585.匿名成员7656, #匿名常量_7686, 匿名局部变量_7583, dwDesiredAccess, #匿名常量_7659, #匿名常量_7689))
-		.如果真(大于或等于(匿名局部变量_7575, 0))
-		赋值(匿名局部变量_7592, 匿名局部变量_7583)
-		.如果真结束
-
-		.如果真结束
-
-		.如果真结束
-
-		.如果真结束
-		匿名子程序_27995(“ntdll.dll”, “ZwClose”)
-		赋值(匿名局部变量_7575, ZwClose_7697(匿名局部变量_7582))
-		.如果真结束
-		匿名子程序_27995(“ntdll.dll”, “ZwClose”)
-		赋值(匿名局部变量_7575, ZwClose_7697(匿名局部变量_7581))
-		.如果真结束
-		赋值(匿名局部变量_7589, 相加(匿名局部变量_7589, 16))
-		.计次循环尾()
-		返回(匿名局部变量_7592)*/
-}
-
-bool YunLai::ForceCloseProcess(DWORD hProcessID, DWORD nExitStatus)
-{
-	bool bRet = false;
-	if (ZwCreateJobObject_Import() == nullptr)
-		return false;
-	HANDLE hProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, hProcessID);
-
-	PHANDLE jobHandle;
-	ACCESS_MASK accessMask = 2031647;
-	POBJECT_ATTRIBUTES attribute ;
-	memset(&attribute, 0, sizeof(POBJECT_ATTRIBUTES));
-	attribute->Length = 24;
-
-	NTSTATUS jobObj = ZwCreateJobObject_Import()(jobHandle, accessMask, attribute);
-	if (jobObj >= 0)
-	{
-		NTSTATUS assignProcessObj = ZwAssignProcessToJobObject_Import()((HANDLE)jobObj, hProcessHandle);
-		if (assignProcessObj >= 0)
-		{
-			NTSTATUS terminateJobRet =ZwTerminateJobObject_Import()((HANDLE)jobObj,nExitStatus);
-			if (terminateJobRet >= 0)
-			{
-				bRet = true;
-			}
-		}
-		ZwClose_Import()((HANDLE)jobObj);
-	}
-	if (bRet==false)
-	{
-		NTSTATUS terminateProcessRet = ZwTerminateProcess_Import()(hProcessHandle, nExitStatus);
-		if (terminateProcessRet >= 0)
-		{
-			bRet = true;
-		}
-	}
-	return bRet;		
-}
+//
+//long YunLai::ForceOpenProcess(DWORD dwDesiredAccess, bool bInhert,DWORD ProcessId)
+//{
+//	bool bRet = false;
+//	POBJECT_ATTRIBUTES attribute;
+//	memset(&attribute, 0, sizeof(POBJECT_ATTRIBUTES));
+//	attribute->Length = 24;
+//	if (bInhert)
+//		attribute->Attributes = attribute->Attributes|2;
+//	HANDLE hProcessHandle;
+//	PCLIENT_ID clientID;
+//	clientID->UniqueProcess =(HANDLE)(ProcessId + 1);
+//    NTSTATUS openRet = ZwOpenProcess_Import()(&hProcessHandle, dwDesiredAccess, attribute, clientID);
+//	if (openRet >= 0)
+//		return openRet;
+//	/*赋值(匿名局部变量_7587, 1)
+//		.循环判断首()
+//		赋值(匿名局部变量_7588, 取空白字节集(匿名局部变量_7587))
+//		匿名子程序_27995(“ntdll.dll”, “ZwQuerySystemInformation”)
+//		赋值(匿名局部变量_7592, ZwQuerySystemInformation_5853(16, 匿名局部变量_7588, 匿名局部变量_7587, 0))
+//		.如果(等于(匿名局部变量_7592, #匿名常量_5852))
+//		赋值(匿名局部变量_7587, 相乘(匿名局部变量_7587, 2))
+//		赋值(匿名局部变量_7588, 取空白字节集(匿名局部变量_7587))
+//		.否则
+//		跳出循环()
+//		.如果结束
+//
+//		.循环判断尾(等于(匿名局部变量_7592, #匿名常量_5852))
+//		赋值(匿名局部变量_7589, lstrcpyn_1750(匿名局部变量_7588, 匿名局部变量_7588, 0))
+//		RtlMoveMemory_5858(匿名局部变量_7578, 匿名局部变量_7589, 4)
+//		赋值(匿名局部变量_7589, 相加(匿名局部变量_7589, 4))
+//		.计次循环首(匿名局部变量_7578, 匿名局部变量_7580)
+//		RtlMoveMemory_7672(匿名局部变量_7585, 匿名局部变量_7589, 16)
+//		.如果真(等于(匿名局部变量_7585.匿名成员7654, #匿名常量_7677))
+//		赋值(匿名局部变量_7576.匿名成员7635, 匿名局部变量_7585.匿名成员7652)
+//		匿名子程序_27995(“ntdll.dll”, “ZwOpenProcess”)
+//		赋值(匿名局部变量_7575, ZwOpenProcess_7665(匿名局部变量_7581, #匿名常量_1092, 匿名局部变量_7577, 匿名局部变量_7576))
+//		.如果真(大于或等于(匿名局部变量_7575, 0))
+//		匿名子程序_27995(“ntdll.dll”, “ZwDuplicateObject”)
+//		赋值(匿名局部变量_7575, ZwDuplicateObject_7678(匿名局部变量_7581, 匿名局部变量_7585.匿名成员7656, #匿名常量_7686, 匿名局部变量_7582, #匿名常量_1096, 0, #匿名常量_7689))
+//		.如果真(大于或等于(匿名局部变量_7575, 0))
+//		匿名子程序_27995(“ntdll.dll”, “ZwQueryInformationProcess”)
+//		赋值(匿名局部变量_7575, ZwQueryInformationProcess_7690(匿名局部变量_7582, 0, 匿名局部变量_7579, 24, 0))
+//		.如果真(大于或等于(匿名局部变量_7575, 0))
+//		.如果真(等于(匿名局部变量_7579.匿名成员7649, ProcessId))
+//		匿名子程序_27995(“ntdll.dll”, “ZwDuplicateObject”)
+//		赋值(匿名局部变量_7575, ZwDuplicateObject_7678(匿名局部变量_7581, 匿名局部变量_7585.匿名成员7656, #匿名常量_7686, 匿名局部变量_7583, dwDesiredAccess, #匿名常量_7659, #匿名常量_7689))
+//		.如果真(大于或等于(匿名局部变量_7575, 0))
+//		赋值(匿名局部变量_7592, 匿名局部变量_7583)
+//		.如果真结束
+//
+//		.如果真结束
+//
+//		.如果真结束
+//
+//		.如果真结束
+//		匿名子程序_27995(“ntdll.dll”, “ZwClose”)
+//		赋值(匿名局部变量_7575, ZwClose_7697(匿名局部变量_7582))
+//		.如果真结束
+//		匿名子程序_27995(“ntdll.dll”, “ZwClose”)
+//		赋值(匿名局部变量_7575, ZwClose_7697(匿名局部变量_7581))
+//		.如果真结束
+//		赋值(匿名局部变量_7589, 相加(匿名局部变量_7589, 16))
+//		.计次循环尾()
+//		返回(匿名局部变量_7592)*/
+//}
+//
+//bool YunLai::ForceCloseProcess(DWORD hProcessID, DWORD nExitStatus)
+//{
+//	bool bRet = false;
+//	if (ZwCreateJobObject_Import() == nullptr)
+//		return false;
+//	HANDLE hProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, hProcessID);
+//
+//	PHANDLE jobHandle;
+//	ACCESS_MASK accessMask = 2031647;
+//	POBJECT_ATTRIBUTES attribute ;
+//	memset(&attribute, 0, sizeof(POBJECT_ATTRIBUTES));
+//	attribute->Length = 24;
+//
+//	NTSTATUS jobObj = ZwCreateJobObject_Import()(jobHandle, accessMask, attribute);
+//	if (jobObj >= 0)
+//	{
+//		NTSTATUS assignProcessObj = ZwAssignProcessToJobObject_Import()((HANDLE)jobObj, hProcessHandle);
+//		if (assignProcessObj >= 0)
+//		{
+//			NTSTATUS terminateJobRet =ZwTerminateJobObject_Import()((HANDLE)jobObj,nExitStatus);
+//			if (terminateJobRet >= 0)
+//			{
+//				bRet = true;
+//			}
+//		}
+//		ZwClose_Import()((HANDLE)jobObj);
+//	}
+//	if (bRet==false)
+//	{
+//		NTSTATUS terminateProcessRet = ZwTerminateProcess_Import()(hProcessHandle, nExitStatus);
+//		if (terminateProcessRet >= 0)
+//		{
+//			bRet = true;
+//		}
+//	}
+//	return bRet;		
+//}
 //获取库句柄  参数 库名  系统库是库名 否则全路径
 HMODULE YunLai::GetLibraryHandle(const char* szLib)
 {

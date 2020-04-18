@@ -26,9 +26,6 @@
     <Filter Include="qxtglobalshortcut5">
       <UniqueIdentifier>{a07a424a-4484-44fc-b0d3-e1299d8287da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LibAPI">
-      <UniqueIdentifier>{833178e1-bbee-4120-ad59-c1dea49927a1}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,12 +48,6 @@
     </ClCompile>
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp">
       <Filter>qxtglobalshortcut5</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\LibApiImport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\YunLai.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FZParseScript.cpp">
       <Filter>Source Files</Filter>
@@ -95,6 +86,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XASM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\YunLai.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -180,108 +174,6 @@
     <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h">
       <Filter>qxtglobalshortcut5</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\MINT.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntdbg.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntexapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntgdi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntioapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntkeapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntldr.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntlpcapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntmisc.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntmmapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntnls.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntobapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntpebteb.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntpfapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntpnpapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntpoapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntpsapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntregapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntrtl.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntsam.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntseapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntsmss.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\nttmapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\nttp.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntwow64.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntxcapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\ntzwapi.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\phnt.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\phnt_ntdef.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\phnt_windows.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\subprocesstag.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\phnt\winsta.h">
-      <Filter>LibAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\LibApiImport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\YunLai.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -294,15 +186,8 @@
     <ClInclude Include="XASM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\include\phnt\README.md">
-      <Filter>LibAPI</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\include\phnt\zw_options.txt">
-      <Filter>LibAPI</Filter>
-    </Text>
+    <ClInclude Include="..\include\YunLai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

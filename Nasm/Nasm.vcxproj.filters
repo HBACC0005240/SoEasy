@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="stdlib">
+      <UniqueIdentifier>{fe8864fa-111f-4e75-a135-65273d271680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nasmlib">
+      <UniqueIdentifier>{67e4cf29-11cb-4bf2-9314-1bfbbdcf091b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x86">
+      <UniqueIdentifier>{d19fd2f5-b2bd-4b69-b086-4a0081da0f50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{864c5bcd-89f2-4863-be5c-92af9fbe5ab9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="output">
+      <UniqueIdentifier>{7cf20ae7-54db-4153-8c15-b3f3331e9349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="macros">
+      <UniqueIdentifier>{78c0e668-f08e-4982-8bbf-b25f8ef07ee7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="assemble.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="directbl.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="directiv.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="error.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="eval.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="exprdump.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="exprlib.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="float.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="labels.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="listing.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="nasm.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pptok.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pragma.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="preproc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="preproc-nop.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="quote.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="rdstrnum.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="segalloc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdscan.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="strfunc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tokhash.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\snprintf.c">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\strlcpy.c">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\strnlen.c">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\strrchrnul.c">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\vsnprintf.c">
+      <Filter>stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\badenum.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\bsi.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\crc64.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\errfile.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\file.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\filename.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\hashtbl.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\ilog2.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\malloc.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\md5c.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\mmap.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\path.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\perfhash.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\raa.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\rbtree.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\readnum.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\realpath.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\saa.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\srcfile.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\string.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\strlist.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\ver.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="nasmlib\zerobuf.c">
+      <Filter>nasmlib</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\disp8.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\iflag.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\insnsa.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\insnsb.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\insnsd.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\insnsn.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\regdis.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\regflags.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\regs.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\regvals.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="common\common.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="output\codeview.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\legacy.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\nulldbg.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\nullout.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outaout.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outas86.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outbin.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outcoff.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outdbg.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outelf.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outform.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outieee.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outlib.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outmacho.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outobj.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\outrdf2.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="output\strtbl.c">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="macros\macros.c">
+      <Filter>macros</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="assemble.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="directiv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="eval.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="float.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="listing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pptok.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="preproc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="quote.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdscan.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tokens.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="nasmlib\file.h">
+      <Filter>nasmlib</Filter>
+    </ClInclude>
+    <ClInclude Include="bytesex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="compiler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="disp8.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="error.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hashtbl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="iflag.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ilog2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="insns.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="labels.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="nasm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="nasmint.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="nasmlib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="opflags.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="perfhash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="raa.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rbtree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rdoff.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="saa.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="strlist.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="tables.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\iflaggen.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\insnsi.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\regdis.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\regs.h">
+      <Filter>x86</Filter>
+    </ClInclude>
+    <ClInclude Include="output\dwarf.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\elf.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\outelf.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\outform.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\outlib.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\pecoff.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\stabs.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="output\strtbl.h">
+      <Filter>output</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="directiv.dat" />
+    <None Include="phash.pl" />
+    <None Include="pptok.dat" />
+    <None Include="pptok.ph" />
+    <None Include="pptok.pl" />
+    <None Include="tokens.dat" />
+    <None Include="tokhash.pl" />
+    <None Include="nasmlib\perfhash.pl">
+      <Filter>nasmlib</Filter>
+    </None>
+    <None Include="x86\insns.dat">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="x86\insns.pl">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="x86\insns-iflags.ph">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="x86\regs.dat">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="x86\regs.pl">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="output\outaout.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outas86.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outbin.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outcoff.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outdbg.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outelf.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outmacho.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outobj.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outrdf.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="output\outrdf2.mac">
+      <Filter>output</Filter>
+    </None>
+    <None Include="macros\altreg.mac">
+      <Filter>macros</Filter>
+    </None>
+    <None Include="macros\fp.mac">
+      <Filter>macros</Filter>
+    </None>
+    <None Include="macros\ifunc.mac">
+      <Filter>macros</Filter>
+    </None>
+    <None Include="macros\macros.pl">
+      <Filter>macros</Filter>
+    </None>
+    <None Include="macros\smartalign.mac">
+      <Filter>macros</Filter>
+    </None>
+    <None Include="macros\standard.mac">
+      <Filter>macros</Filter>
+    </None>
+  </ItemGroup>
+</Project>

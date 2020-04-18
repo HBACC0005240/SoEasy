@@ -127,10 +127,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="WPGTool.cpp" />
-    <ClCompile Include="YunLai.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="YunLai.h" />
     <CustomBuild Include="..\include\ITHotKeyProxy.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>

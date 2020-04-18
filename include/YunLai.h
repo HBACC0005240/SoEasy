@@ -8,7 +8,7 @@
 #include <qwindowdefs_win.h>
 #include <string>
 #include <functional>
-#include "MINT.h"
+//#include "MINT.h"
 //#include <experimental/filesystem>
 //#include <experimental/scope>
 using namespace std;
@@ -112,8 +112,8 @@ public:
 
 	static void  WriteMemoryIntToWnd(HWND hwnd, const char* szAddress,int nVal);
 	static void  WriteMemoryIntToProcess(DWORD hProcessID, const char* szAddress, int nVal);
-	static long  ForceOpenProcess(DWORD dwDesiredAccess, bool bInhert, DWORD ProcessId);
-	static bool  ForceCloseProcess(DWORD hProcessID, DWORD nExitStatus);
+	//static long  ForceOpenProcess(DWORD dwDesiredAccess, bool bInhert, DWORD ProcessId);
+	//static bool  ForceCloseProcess(DWORD hProcessID, DWORD nExitStatus);
 
 	//dllÄ£¿é
 	static HMODULE GetLibraryHandle(const char* szLib);
