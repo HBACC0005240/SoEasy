@@ -62,6 +62,7 @@ void GameChatWgt::doUpdateGameChat()
 			QString chatData = QString::fromWCharArray(ANSITOUNICODE1(YunLai::ReadMemoryStrFromProcessID(GameData::getInstance().getGamePID(), pAddress, 300)));
 			if (!chatData.isEmpty())//不为空 记录时间  2秒定时器 只能这样来记录大概时间了
 			{
+				chatData = chatData.trimmed();
 			//	ui.textEdit->append(QString("%1 %2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss ddd")).arg(chatData));
 				addOneChatData(chatData);
 			}
@@ -69,4 +70,10 @@ void GameChatWgt::doUpdateGameChat()
 		ui.tableWidget->verticalScrollBar()->setSliderPosition(ui.tableWidget->verticalScrollBar()->maximum());
 	}
 	m_nLastIndex = (nCurChatIndex-1);
+}
+
+void GameChatWgt::on_pushButton_chat_clicked()
+{
+	QString szChat = ui.textEdit->toPlainText();
+	GameData::getInstance().Chat(szChat);
 }

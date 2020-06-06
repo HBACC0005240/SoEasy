@@ -36,9 +36,9 @@ void ColorTool::setCurrentColor(QColor color)
 
 void ColorTool::on_pushButton_select_clicked()
 {
-	Beep(500, 500);
-	::MessageBox(nullptr, ANSITOUNICODE1("112233"), ANSITOUNICODE1("112233"), MB_OK);// MeassgeBox();
-	return;
+	//Beep(500, 500);
+	//::MessageBox(nullptr, ANSITOUNICODE1("112233"), ANSITOUNICODE1("112233"), MB_OK);// MeassgeBox();
+	//return;
 	if (ui.checkBox_isMouse->isChecked())
 	{
 		ui.checkBox_isMouse->setChecked(false);

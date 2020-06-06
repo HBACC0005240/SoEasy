@@ -1,5 +1,6 @@
 #include "GameWorkWgt.h"
 #include "stdafx.h"
+#include "gameservice.h"
 GameWorkWgt::GameWorkWgt(QWidget *parent)
 	: QWidget(parent)
 {
@@ -44,6 +45,7 @@ void GameWorkWgt::on_pushButton_useSkill_clicked()
 {
 	QString skillName = ui.comboBox_skill->currentText();
 	int nCurIndex = ui.comboBox_skill->itemData(ui.comboBox_skill->currentIndex()).toInt();
+//	SendMessageA(GameData::getInstance().getGameHwnd(), WM_CGA_START_WORK, nCurIndex, 0);
 	GameData::getInstance().Work(skillName);
 }
 

@@ -44,33 +44,19 @@
     <ClCompile Include="QDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QDetection.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QDetection.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_QDetection.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="ITDataMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ITDataMgr.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ITDataMgr.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\include\ITMutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ITDevice.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ITDevice.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="ITDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -79,9 +65,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_QDetection.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
     <ClInclude Include="Public_opencv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,20 +74,20 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="QDetection.h">
+    <QtMoc Include="QDetection.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QDetection.ui">
+    </QtMoc>
+    <QtUic Include="QDetection.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QDetection.qrc">
+    </QtUic>
+    <QtRcc Include="QDetection.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ITDataMgr.h">
+    </QtRcc>
+    <QtMoc Include="ITDataMgr.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ITDevice.h">
+    </QtMoc>
+    <QtMoc Include="ITDevice.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
 </Project>

@@ -95,6 +95,7 @@ public:
 	void SetCharacterSwitch(int v1,int v2,int v3,int v4,int v5,int v6);
 	void Ren(const QString& itemName);
 	void Ren(int nIndex);
+	void Chat(const QString& szText);
 private:
 	DWORD m_gameProcessID;
 	HWND m_gameHwnd;	//сно╥╢╟©з╬Д╠З

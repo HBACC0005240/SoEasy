@@ -44,37 +44,29 @@
     <ClCompile Include="SoEasy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_SoEasy.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_SoEasy.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_SoEasy.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_SoEasy.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="SoEasy.h">
+    <QtMoc Include="SoEasy.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="SoEasy.ui">
+    </QtMoc>
+    <QtUic Include="SoEasy.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="SoEasy.qrc">
+    </QtUic>
+    <QtRcc Include="SoEasy.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <None Include="icon1.ico" />

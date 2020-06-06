@@ -189,5 +189,8 @@
     <ClInclude Include="..\include\YunLai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gameservice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

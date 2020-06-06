@@ -64,7 +64,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="pushButton_chat">
            <property name="maximumSize">
             <size>
              <width>50</width>

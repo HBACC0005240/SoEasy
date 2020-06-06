@@ -2,7 +2,9 @@
 //
 
 #pragma once
-
+#include <map>
+#include <stdio.h>
+using namespace std;
 
 // CplantsDlg 对话框
 class CplantsDlg : public CDialog
@@ -17,6 +19,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
+//	void GetAllProcess(std::map<DWORD, std::wstring>& processInfo);
 
 // 实现
 protected:

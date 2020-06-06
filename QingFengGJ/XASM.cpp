@@ -1424,6 +1424,7 @@ int XASM::Assemble(char *cmd,DWORD ip,t_asmmodel *model,int attempt,int constsiz
   int hasrm,hassib,dispsize,immsize;
   int anydisp,anyimm,anyjmp;
   long l,displacement,immediate,jmpoffset;
+  jmpoffset = 0;
   char name[32],*nameend;
   char tcode[MAXCMDSIZE],tmask[MAXCMDSIZE];
   t_asmoperand aop[3],*op;             // Up to 3 operands allowed

@@ -44,24 +44,14 @@
     <ClCompile Include="QPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QPlayer.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QPlayer.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_QPlayer.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="ITAVPlayWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ITAVPlayWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ITAVPlayWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="ITAVStreamParse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,12 +66,8 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_QPlayer.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_ITAVPlayWidget.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
+    
     <ClInclude Include="ITAVStreamParse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -105,20 +91,20 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="QPlayer.h">
+    <QtMoc Include="QPlayer.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QPlayer.ui">
+    </QtMoc>
+    <QtUic Include="QPlayer.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QPlayer.qrc">
+    </QtUic>
+    <QtRcc Include="QPlayer.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ITAVPlayWidget.h">
+    </QtRcc>
+    <QtMoc Include="ITAVPlayWidget.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ITAVPlayWidget.ui">
+    </QtMoc>
+    <QtUic Include="ITAVPlayWidget.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
+    </QtUic>
   </ItemGroup>
 </Project>

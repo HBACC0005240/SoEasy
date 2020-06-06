@@ -14,6 +14,7 @@ public:
 	void addOneChatData(const QString& chatData);
 public slots:
 	void doUpdateGameChat();
+	void on_pushButton_chat_clicked();
 private:
 	Ui::GameChatWgt ui;
 	int m_nLastIndex;	//ÉÏ´Î¼ÇÂ¼

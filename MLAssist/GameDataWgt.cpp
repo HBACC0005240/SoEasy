@@ -156,11 +156,14 @@ void GameDataWgt::doUpdateGameData()
 //	return;
 	POINT pi;
 	::GetCursorPos(&pi);
+
 	//DWORD srcColorVal = GetPixel(m_screenHDC, pi.x, pi.y);
 //	qDebug() << "屏幕坐标 颜色" << pi.x << pi.y << srcColorVal;
 	::ScreenToClient(GameData::getInstance().getGameHwnd(), &pi);
-	DWORD colorVal = GetPixel(GameData::getInstance().getGameHDC(), pi.x, pi.y);
-	qDebug() << "游戏坐标 颜色" << pi.x << pi.y << colorVal << GetRValue(colorVal) << GetGValue(colorVal) << GetBValue(colorVal);
+	DWORD colorVal = GetPixel(GameData::getInstance().getGameHDC(), 6, 21);//pi.x, pi.y);
+	QColor newColor = QColor(GetRValue(colorVal), GetGValue(colorVal), GetBValue(colorVal));
+
+	qDebug() << "游戏坐标 颜色" << pi.x << pi.y << colorVal << GetRValue(colorVal) << GetGValue(colorVal) << GetBValue(colorVal)<< newColor.name();
 	/*DWORD capColor = YunLai::GetScreenColorCapture(pi.x,pi.y,m_gameHwnd);
 	qDebug() << "截图取色 颜色" << pi.x << pi.y << capColor;*/
 	

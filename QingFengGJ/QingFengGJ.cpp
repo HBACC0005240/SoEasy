@@ -281,7 +281,7 @@ bool high(DWORD processID, int x, int y,int dstx,int dsty)
 	std::cout << "moveto" << x << "," << y << "success \n";
 	return true;
 }
-bool nowhile(DWORD processID, const wchar_t szData)
+bool nowhile(DWORD processID, string szData)
 {	
 	int nTryNum = 0;
 	while (1)//战斗中 等待
@@ -338,14 +338,25 @@ bool transAssemble(void* pAddr, BYTE* buf, int nLen, list<string> szCmdList)
 	buf[m + 2] = 0x00;	
 	return true;
 }
-void WorkCall(DWORD* nindex)
+__declspec(naked) void WorkCallArg(int* nindex)
 {
 	_asm
 	{
-		mov ebx,[esp+4]
-		mov eax,[ebx]
+		mov ebx, [esp+4] //xy
+		mov eax, [ebx]
 		mov ecx,0
 		mov edx,0x00462EF8
+		call edx
+		ret
+	}
+}
+__declspec(naked)  void WorkCall()
+{
+	_asm
+	{
+		mov eax, 0
+		mov ecx, 0
+		mov edx, 0x00462EF8
 		call edx
 		ret
 	}
@@ -362,8 +373,8 @@ void Work(DWORD processID, int nIndex)
 		return;
 	}
 	LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(DWORD), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);
-	//DWORD oldProtect = 0;
-	//VirtualProtectEx(hProcess, callBase, nThreadSize, PAGE_EXECUTE_READWRITE, &oldProtect);//设置具有读写权限
+//	DWORD oldProtect = 0;
+//	VirtualProtectEx(hProcess, callBase, nThreadSize, PAGE_EXECUTE_READWRITE, &oldProtect);//设置具有读写权限
 	for (int i = 0; i < 15; ++i)//先10个  15个技能栏
 	{
 		DWORD pAddress = 0x00D84FEC;
@@ -395,24 +406,30 @@ void Work(DWORD processID, int nIndex)
 		return;
 	}
 	//std::cout << "transAssemble Success!" << buf << "\n";
-	Sleep(1000);//太快？
-//	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)buf, nThreadSize, nullptr);
+	//Sleep(1000);//太快？
 	DWORD byWrite;
-	bool bRet = WriteProcessMemory(hProcess, callBase, WorkCall, nThreadSize, &byWrite);
+	//BYTE testData[100] = { 0x8B,0x5C ,0x24 ,0x04 ,0x8B ,0x03 ,0xB9 ,0x00 ,0x00 ,0x00 ,0x00 ,0xBA ,0xF8 ,0x2E ,0x46 ,0x00 ,0x8B ,0xC2 ,0xFF ,0xD0 ,0xC3 };//{ 0x66,0xbb,0x20,0x20,0x20,0x20,0x66,0x67,0x8b,0x03,0x66,0xb9,0x20,0x20,0x20,0x20,0x66,0xba,0xf8,0x2e,0x46,0x20,0x66,0xff,0xd2,0xc3};
+	//bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)testData, 100, &byWrite);
+	//int eRoCode = GetLastError();
+	//std::cout << "erorCode:" << GetLastError() << "提示：写入代码失败\n";
+	//HANDLE hRemoteThread1 = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)callBase, nullptr, 0, 0);
+
+	bool bRet = WriteProcessMemory(hProcess, callBase, WorkCallArg, nThreadSize, &byWrite);
 	if (bRet == false)
 	{
+		int eRoCode = GetLastError();
 		std::cout << "erorCode:" << GetLastError() << "提示：写入代码失败\n";
 		VirtualFreeEx(hProcess, callBase, 0x8FFF, MEM_DECOMMIT);
 		VirtualFreeEx(hProcess, callArg, 0x8FFF, MEM_DECOMMIT);
 		CloseHandle(hProcess);
 		return;
 	}
-	bRet = WriteProcessMemory(hProcess, callArg, &nIndex, sizeof(DWORD), &byWrite);
+	bRet = WriteProcessMemory(hProcess, callArg, &nIndex, sizeof(int), &byWrite);
 	if (bRet == false)
 	{
 		std::cout << "erorCode:"<<GetLastError() << "提示：写入参数失败\n";
 		VirtualFreeEx(hProcess, callBase, 0x8FFF, MEM_DECOMMIT);
-		VirtualFreeEx(hProcess, callArg, sizeof(DWORD), MEM_DECOMMIT);
+		VirtualFreeEx(hProcess, callArg, sizeof(int), MEM_DECOMMIT);
 		CloseHandle(hProcess);
 		return;
 	}
@@ -498,7 +515,7 @@ void selectRenew(DWORD processID)
 	SendMessage(gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
 	SendMessage(gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 }
-void SelectBuMpAndHp()
+__declspec(naked) void SelectBuMpAndHp()
 {
 	_asm
 	{
@@ -513,7 +530,7 @@ void SelectBuMpAndHp()
 		ret
 	}
 }
-void SelectYes()
+__declspec(naked) void SelectYes()
 {
 	_asm
 	{
@@ -558,20 +575,20 @@ void remoteCall(DWORD processID,void* pCall)
 		CloseHandle(hProcess);
 		return;
 	}
-	WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
-	VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
-	CloseHandle(hRemoteThread);
-	CloseHandle(hProcess);
+	//WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
+	//VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+	//CloseHandle(hRemoteThread);
+	//CloseHandle(hProcess);
 	std::cout << "remoteCall Success !\n";
 }
 void selectMpAndHp(DWORD processID)
 {
 	EnableDebugPriv();//提升进程权限 VS2008以后的版本才需要
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
-	DWORD nThreadSize = 0x400;
+	DWORD nThreadSize = 0x8FFF;
 	LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
 	if (callBase == nullptr)
-	{
+	{ 
 		printf("提示：申请空间失败\n");
 		return;
 	}
@@ -645,11 +662,11 @@ bool renew(DWORD processID, int direction)
 	int nHp = getPersionHP(processID);
 	int nMp = getPersionMP(processID);
 	Sleep(1500);
-	selectMpAndHp(processID);
-//	remoteCall(processID, SelectBuMpAndHp);//选补血魔
+//	selectMpAndHp(processID);
+	remoteCall(processID, SelectBuMpAndHp);//选补血魔
 	Sleep(1500);
-	selectDlgYes(processID);
-//	remoteCall(processID, SelectYes);//选是
+//	selectDlgYes(processID);
+	remoteCall(processID, SelectYes);//选是
 //	selectRenew(processID);
 	int nRenewHp = getPersionHP(processID);
 	int nRenewMp = getPersionMP(processID);
@@ -672,7 +689,7 @@ void StartWork(DWORD processID)
 		 if (characterPoint.x == 221 && characterPoint.y == 84)
 		{
 			 high(processID, 221, 83,12,42);
-			 nowhile(processID, wchar_t("城东医院"));
+			 nowhile(processID, ("城东医院"));
 			 moveto(processID, 12, 35);
 			 moveto(processID, 6, 35);
 			 moveto(processID, 6, 34);
@@ -685,7 +702,7 @@ void StartWork(DWORD processID)
 			 moveto(processID, 12, 35);
 			 moveto(processID, 12, 41);
 			 high(processID, 12, 42,221,83);
-			 nowhile(processID, wchar_t("法兰城"));
+			 nowhile(processID, ("法兰城"));
 			 moveto(processID, 221, 84);
 			 StartWork(processID);
 			 Sleep(1000);
@@ -728,6 +745,13 @@ int main()
 		for (auto it = g_mlProcess.begin(); it != g_mlProcess.end(); ++it)
 		{
 			DWORD processID = it->first;
+//			remoteCall(processID, WorkCall);
+			Work(processID, 0);
+			remoteCall(processID, SelectBuMpAndHp);//选补血魔
+			Sleep(1500);
+			remoteCall(processID, SelectYes);//选是
+			Work(processID,0);
+			selectMpAndHp(processID);
 			std::cout << processID << "\n";
 			//判断当前坐标
 			POINT characterPoint = GetGamePersonCoordinate(processID);
@@ -753,22 +777,22 @@ int main()
 				moveto(processID, 12, 35);
 				moveto(processID, 12, 41);
 				high(processID, 12, 42, 221, 83);
-				nowhile(processID, wchar_t("法兰城"));
+				nowhile(processID, ("法兰城"));
 				moveto(processID, 221, 84);
 				StartWork(processID);
 				Sleep(1000);
 			}
-			else if (mapName.find(wchar_t("城东医院")) != string::npos)//地图名称在医院  
+			else if (mapName.find(("城东医院")) != string::npos)//地图名称在医院  
 			{
 				moveto(processID, 6, 35);
 				moveto(processID, 12, 35);
 				moveto(processID, 12, 41);
 				moveto(processID, 12, 42);
-				nowhile(processID, wchar_t("法兰城"));
+				nowhile(processID, ("法兰城"));
 				moveto(processID, 221, 84);
 				StartWork(processID);
 			}
-			else if (mapName.find(wchar_t("法兰城")) != string::npos)	//去挂机点 上面判断过是否在挂机点 
+			else if (mapName.find(("法兰城")) != string::npos)	//去挂机点 上面判断过是否在挂机点 
 			{
 				moveto(processID, 226, 89);
 				moveto(processID, 221, 84);

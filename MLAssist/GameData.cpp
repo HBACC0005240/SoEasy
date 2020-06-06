@@ -423,7 +423,7 @@ void GameData::Work(int code, const QString itemName/*=""*/)
 //	bool bRet = WriteProcessMemory(hProcess, callBase, (LPCVOID)RemoteWorkCall, 4096, nullptr);
 	if (bRet == false)
 	{
-		QMessageBox::information(nullptr, "提示：", "写入代码失败", QMessageBox::Ok);
+		QMessageBox::information(nullptr, "提示：", QString("写入代码失败%1").arg(GetLastError()), QMessageBox::Ok);
 		return;
 	}
 	DWORD tId;
@@ -611,6 +611,27 @@ void GameData::Ren(int nIndex)
 	VirtualFreeEx(hProcess, callBase, 0x8FFF, MEM_DECOMMIT);
 	CloseHandle(hRemoteThread);
 	CloseHandle(hProcess);
+}
+
+void GameData::Chat(const QString& szText)
+{
+	//wstring szChat = szText.toStdWString(); 
+	//for (int i = 0; i < szChat.size(); i++)
+	//{
+	//	::SendMessage(m_gameHwnd/*目标窗体的句柄*/, WM_CHAR, szChat.at(i), 0);
+	//}
+	////	keybd_event(13,0,0,0);
+	//SendMessage(m_gameHwnd, WM_KEYDOWN, VK_RETURN, 0);
+	//SendMessage(m_gameHwnd, WM_KEYUP, VK_RETURN, 0);
+
+	POINT points;
+	points.x = 384;
+	points.y = 187;
+	//ClientToScreen(m_gameHwnd, &points);
+		//YunLai::SetFocusToWnd(m_gameHwnd);//已经是焦点了 不需要
+	LPARAM newl = MAKELPARAM(points.x, points.y);
+	SendMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
+	SendMessage(m_gameHwnd, WM_LBUTTONDBLCLK, WM_LBUTTONDBLCLK, newl);
 }
 
 void GameData::readBattleInfo()

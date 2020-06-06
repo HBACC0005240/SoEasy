@@ -47,36 +47,22 @@
     <ClCompile Include="WPGTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_WPGTool.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_WPGTool.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_WPGTool.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="..\include\ITHotKeyProxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ITHotKeyProxy.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ITHotKeyProxy.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qxtglobalshortcut.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qxtglobalshortcut.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
@@ -97,9 +83,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_WPGTool.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,21 +104,21 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="WPGTool.h">
+    <QtMoc Include="WPGTool.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="WPGTool.ui">
+    </QtMoc>
+    <QtUic Include="WPGTool.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="WPGTool.qrc">
+    </QtUic>
+    <QtRcc Include="WPGTool.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\include\ITHotKeyProxy.h">
+    </QtRcc>
+    <QtMoc Include="..\include\ITHotKeyProxy.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
+    </QtMoc>
+    <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
       <Filter>qxtglobalshortcut5</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\passingThrough.ico" />

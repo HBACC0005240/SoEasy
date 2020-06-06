@@ -44,36 +44,28 @@
     <ClCompile Include="TimeTrans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_TimeTrans.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_TimeTrans.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_TimeTrans.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_TimeTrans.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="TimeTrans.h">
+    <QtMoc Include="TimeTrans.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="TimeTrans.ui">
+    </QtMoc>
+    <QtUic Include="TimeTrans.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="TimeTrans.qrc">
+    </QtUic>
+    <QtRcc Include="TimeTrans.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
+    </QtRcc>
   </ItemGroup>
 </Project>
