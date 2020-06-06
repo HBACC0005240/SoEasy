@@ -118,6 +118,7 @@ enum MOVE_DIRECTION
 	MOVE_DIRECTION_LEFTDOWN = 6,
 	MOVE_DIRECTION_RIGHTDOWN = 4,
 };
+
 //貌似界面不显示 这边就无效
 void turn_about(DWORD hProcessID, int nDirection)
 {
@@ -338,9 +339,9 @@ bool transAssemble(void* pAddr, BYTE* buf, int nLen, list<string> szCmdList)
 	buf[m + 2] = 0x00;	
 	return true;
 }
-__declspec(naked) void WorkCallArg(int* nindex)
+void __declspec(naked) WorkCall(DWORD* nindex)
 {
-	_asm
+	__asm
 	{
 		mov ebx, [esp+4] //xy
 		mov eax, [ebx]
@@ -482,7 +483,13 @@ HWND FindMainWindow(unsigned long process_id)
 	EnumWindows(EnumWindowsCallback, (LPARAM)&data);
 	return data.best_handle;
 }
-
+void SendString(DWORD hProcessID)
+{
+	HWND gameHwnd = FindMainWindow(hProcessID);
+	SendMessage(gameHwnd, WM_CHAR, 48, 0);
+	SendMessage(gameHwnd, WM_CHAR, 13, 0);
+	//	keybd_event(13,0,0,0);
+}
 static POINT g_defResumeHMP = { 302, 174 };	//恢复hp mp
 static POINT g_defResumePetHMP = { 285, 252 };	//恢复宠物hp mp
 static POINT g_defYes = { 250, 315 };	//是
@@ -515,9 +522,9 @@ void selectRenew(DWORD processID)
 	SendMessage(gameHwnd, WM_LBUTTONDOWN, WM_LBUTTONDOWN, newl);
 	SendMessage(gameHwnd, WM_LBUTTONUP, WM_LBUTTONUP, newl);
 }
-__declspec(naked) void SelectBuMpAndHp()
+void __declspec(naked) SelectBuMpAndHp()
 {
-	_asm
+	__asm
 	{
 		mov ecx, 0xA0000000
 		push ecx
@@ -530,9 +537,9 @@ __declspec(naked) void SelectBuMpAndHp()
 		ret
 	}
 }
-__declspec(naked) void SelectYes()
+void __declspec(naked) SelectYes()
 {
-	_asm
+	__asm
 	{
 		push 0
 		push 0
@@ -552,7 +559,7 @@ void remoteCall(DWORD processID,void* pCall)
 	LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
 	if (callBase == nullptr)
 	{
-		printf("提示：申请空间失败\n");
+		std::cout << "erorCode:" << GetLastError() << ("提示：申请空间失败\n");
 		return;
 	}
 	//LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(DWORD), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);	
@@ -589,7 +596,7 @@ void selectMpAndHp(DWORD processID)
 	LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
 	if (callBase == nullptr)
 	{ 
-		printf("提示：申请空间失败\n");
+		std::cout << " selectMpAndHp erorCode:" << GetLastError() << "提示：写入代码失败\n";
 		return;
 	}
 	//LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(DWORD), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);	
@@ -627,7 +634,7 @@ void selectDlgYes(DWORD processID)
 	LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
 	if (callBase == nullptr)
 	{
-		printf("提示：申请空间失败\n");
+		std::cout << " selectDlgYes erorCode:" << GetLastError() << "提示：写入代码失败\n";
 		return;
 	}
 	//LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(DWORD), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);	
@@ -658,15 +665,17 @@ void selectDlgYes(DWORD processID)
 }
 bool renew(DWORD processID, int direction)
 {
-	turn_about(processID,direction);
+	return true;
+	SendString(processID);
+//	turn_about(processID,direction);
 	int nHp = getPersionHP(processID);
 	int nMp = getPersionMP(processID);
-	Sleep(1500);
+//	Sleep(1500);
 //	selectMpAndHp(processID);
-	remoteCall(processID, SelectBuMpAndHp);//选补血魔
-	Sleep(1500);
+////	remoteCall(processID, SelectBuMpAndHp);//选补血魔
+//	Sleep(1500);
 //	selectDlgYes(processID);
-	remoteCall(processID, SelectYes);//选是
+//	remoteCall(processID, SelectYes);//选是
 //	selectRenew(processID);
 	int nRenewHp = getPersionHP(processID);
 	int nRenewMp = getPersionMP(processID);
@@ -711,29 +720,15 @@ void StartWork(DWORD processID)
 	else
 	{
 		std::cout << "begin Work" << nMp << " \n";
-		
+		/*
 		Work(processID,102);
-		Sleep(1000);
+		Sleep(1000);*/
 	}		
 }
 
 //判断坐标 
 int main()
 {
-	/*BYTE buf[40] = { 0 };
-	list<wstring> szAssemble;
-	char sVal[25] = { 0 };
-	sprintf(sVal, "mov eax,0x%x", 11);
-	szAssemble.push_back(ANSITOUNICODE1(sVal));
-	szAssemble.push_back(ANSITOUNICODE1("mov ecx, 0"));
-	szAssemble.push_back(ANSITOUNICODE1("mov edx, 0x00462EF8"));
-	szAssemble.push_back(ANSITOUNICODE1("call edx"));*/
-	/*bool bTAssable = transAssemble(callBase, buf, nThreadSize, szAssemble);
-	if (bTAssable == false)
-	{
-		std::cout << "transAssemble Failed!\n";
-		return;
-	}*/
     std::cout << "Hello World!\n";
 	//1、隔一段时间获取所有进程 
 	while (true)

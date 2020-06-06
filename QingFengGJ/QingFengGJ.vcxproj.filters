@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="QingFengGJ.cpp">
+    <ClCompile Include="XASM.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="XASM.cpp">
+    <ClCompile Include="QingFengGJ.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
