@@ -520,27 +520,35 @@ static int llex (LexState *ls, SemInfo *seminfo) {
       case EOZ: {
         return TK_EOS;
       }
-      default: {
-        if (lislalpha(ls->current)) {  /* identifier or reserved word? */
-          TString *ts;
-          do {
-            save_and_next(ls);
-          } while (lislalnum(ls->current));
-          ts = luaX_newstring(ls, luaZ_buffer(ls->buff),
-                                  luaZ_bufflen(ls->buff));
-          seminfo->ts = ts;
-          if (isreserved(ts))  /* reserved word? */
-            return ts->extra - 1 + FIRST_RESERVED;
-          else {
-            return TK_NAME;
-          }
-        }
-        else {  /* single-char tokens (+ - / ...) */
-          int c = ls->current;
-          next(ls);
-          return c;
-        }
-      }
+	  default: {
+		  if (lislalpha(ls->current) || ls->current == '_' || ls->current > 0x80) {  /* identifier or reserved word? */
+			  TString *ts;
+			  do {
+				  if (ls->current > 0x80)
+				  {
+					  save_and_next(ls);
+					  save_and_next(ls);
+				  }
+				  else
+				  {
+					  save_and_next(ls);
+				  }
+			  } while (lislalnum(ls->current) || ls->current == '_' || ls->current > 0x80);
+			  ts = luaX_newstring(ls, luaZ_buffer(ls->buff),
+				  luaZ_bufflen(ls->buff));
+			  seminfo->ts = ts;
+			  if (isreserved(ts))  /* reserved word? */
+				  return ts->extra - 1 + FIRST_RESERVED;
+			  else {
+				  return TK_NAME;
+			  }
+		  }
+		  else {  /* single-char tokens (+ - / ...) */
+			  int c = ls->current;
+			  next(ls);
+			  return c;
+		  }
+	  }
     }
   }
 }

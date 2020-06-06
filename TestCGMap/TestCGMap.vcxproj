@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B65ACFDB-4B01-4157-9C1C-258A44B2BF7D}</ProjectGuid>
+    <ProjectGuid>{52C8D532-B7C6-4771-86E4-7EEFA1FE9279}</ProjectGuid>
     <Keyword>QtVS_v302</Keyword>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -32,7 +32,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v141</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -68,15 +67,15 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>5.14.2-msvc2017</QtInstall>
+    <QtInstall>Qt-5.5.1_vs2010_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="QtSettings">
-    <QtInstall>5.14.2-msvc2017</QtInstall>
+    <QtInstall>Qt-5.5.1_vs2010_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtInstall>5.14.2-msvc2017</QtInstall>
+    <QtInstall>Qt-5.5.1_vs2010_x64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="QtSettings">
@@ -130,63 +129,36 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include\LuaBridge;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ColorTool.cpp" />
-    <ClCompile Include="ITSignalProxy.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="XColorDialog.cpp" />
-    <ClCompile Include="XColorMaster.cpp" />
-    <ClCompile Include="XColorPreview.cpp" />
-    <ClCompile Include="XColorSquare.cpp" />
-    <ClCompile Include="XGradientSlider.cpp" />
+    <ClCompile Include="TestCGMap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="ColorTool.h" />
+    <QtMoc Include="TestCGMap.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="ColorTool.ui" />
+    <QtUic Include="TestCGMap.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="ColorTool.qrc" />
-    <QtRcc Include="pattern.qrc" />
+    <QtRcc Include="TestCGMap.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="alphaback.png" />
+    <ClInclude Include="global_def.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="XColorDialog.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="XColorMaster.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="XColorPreview.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="XColorSquare.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="XGradientSlider.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="ITSignalProxy.h" />
+    <None Include="Release\tsplug.tlh" />
+    <None Include="Release\tsplug.tli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
