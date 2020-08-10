@@ -103,7 +103,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="label_curRow">
        <property name="text">
         <string>所在行</string>
        </property>
