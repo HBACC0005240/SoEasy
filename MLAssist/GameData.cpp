@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GameData.h"
 #include "YunLai.h"
 #include "../include/ITPublic.h"
@@ -55,6 +56,50 @@ void GameData::initData()
 			m_skillCodeForIndex.insert(m_skillCodeForMyCode.value(nSkillCode), i);
 		m_indexForSkillName.insert(i, skillName);
 	}	
+	//ml[0] = "A2A414";//等级
+	//ml[1] = "7B25C0";//坐标东
+	//ml[2] = "7B25BC";//坐标南
+	//ml[3] = "A2A4C8";//名字
+	//ml[4] = "984FD0";//职业
+	//ml[5] = "A2A560";//站位
+	//ml[6] = "A2A4B4";//健康
+	//ml[7] = "9CAC9A";//宠物起址
+	//ml[8] = "7EA9D0";//人背包起始地址813A90
+	//ml[9] = "1590e0";//战场起址
+	//ml[10] = "A2A418";//血
+	//ml[11] = "A2A41c";//血最大
+	//ml[12] = "A2A420";//魔
+	//ml[13] = "A2A424";//魔最大
+	//ml[14] = "5181C0";//地图名
+	//ml[15] = "A2A4BC";//钱
+	//ml[16] = "7D0798";//走路物品栏是否打开(>5)
+	//ml[17] = "7D0654";//采集用到(=2)
+	//ml[18] = "A36314";//窗口状态//93_60"E1BBE0"
+	//ml[19] = "7D0648";//技能栏是否打开
+	//ml[20] = "7D069C";//制作窗口是否打开
+	//ml[21] = "15F2F0";//战斗做到哪一步
+	//ml[22] = "7D0BA4";//判断谁攻击用
+	//ml[23] = "15F338";//战斗时技能窗口 \1949B0
+	//ml[24] = "7FAB94";//组队队员1名字地址第二个+16进制11
+	//ml[25] = "A2A438";//经验值
+	//ml[26] = "A2A43C";//下一级经验值
+	//ml[27] = "A2A42C";//卡时
+	//ml[28] = "5181E8";//地图编号
+	//ml[30] = "803EA4";//卖物品钱数 唯有"803EA4"
+	//ml[31] = "7DEF08";//唯有回答问题答案"7DEF08"|异度验证码"7DEDBD"
+	//ml[32] = "5D0BC";//步步 唯有"<pkml.dll>+5D0BC"|异度"4C4D8"
+	//ml[33] = "5D0BD";//切图 唯有"<pkml.dll>+5D0BD"|异度"EA768"
+	//ml[35] = "2E96B0";//时间凌晨0-255 ((ss > 15 && ss < 30) || (ss > 110 && ss < 125)); }//16-32 110-128
+	//ml[36] = "A2A566";//装备
+	//ml[37] = "1D95D1";//窗口状态信息
+	m_world_status = CONVERT_GAMEVAR(int *, 0xA36314);//ok  word==2 game==1是断开
+	m_game_status = CONVERT_GAMEVAR(int *, 0xA36338);//ok 1
+	g_skill_base = CONVERT_GAMEVAR(skill_t *, 0x984FEC);//ok
+	UI_OpenGatherDialog = CONVERT_GAMEVAR(void(__cdecl *)(int, int), 0x62EF8);//ok
+	//走路基址4D000
+	Move_Player = CONVERT_GAMEVAR(void(__cdecl *)(), 0x4D000);
+	
+	
 }
 
 POINT GameData::GetGamePersonCoordinate()
@@ -632,6 +677,47 @@ void GameData::Chat(const QString& szText)
 	LPARAM newl = MAKELPARAM(points.x, points.y);
 	SendMessage(m_gameHwnd, WM_MOUSEMOVE, WM_MOUSEMOVE, newl);
 	SendMessage(m_gameHwnd, WM_LBUTTONDBLCLK, WM_LBUTTONDBLCLK, newl);
+}
+
+void GameData::Renew()
+{
+	cga_player_info_t playerinfo=GetPlayerInfo();	
+	bool bNeedHP = NeedHPSupply(playerinfo);
+	bool bNeedMP = NeedMPSupply(playerinfo);
+	if (bNeedHP && (!bNeedMP || playerinfo.gold < playerinfo.maxmp - playerinfo.mp))
+	{
+		ClickNPCDialog(0, 2);
+	}
+	else if (bNeedMP && playerinfo.gold >= playerinfo.maxmp - playerinfo.mp)
+	{
+		ClickNPCDialog(0, 0);
+	}
+
+	/*if (NeedPetSupply(petsinfo))
+	{
+		ClickNPCDialog(0, 4);
+	}*/
+}
+bool GameData::NeedHPSupply(cga_player_info_t &pl)
+{
+	return (pl.hp < pl.maxhp) ? true : false;
+}
+
+bool GameData::NeedMPSupply(cga_player_info_t &pl)
+{
+	return (pl.mp < pl.maxmp) ? true : false;
+}
+
+cga_player_info_t GameData::GetPlayerInfo()
+{
+	cga_player_info_t info;
+	SendMessageA(m_gameHwnd, WM_CGA_GET_PLAYER_INFO, (WPARAM)&info, 0);
+	return info;
+}
+
+bool GameData::ClickNPCDialog(int option, int index)
+{
+	return SendMessageA(m_gameHwnd, WM_CGA_CLICK_NPC_DIALOG, option, index) ? true : false;
 }
 
 void GameData::readBattleInfo()

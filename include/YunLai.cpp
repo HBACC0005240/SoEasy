@@ -114,6 +114,57 @@ QString YunLai::GetPathByProcessID(DWORD pid)
 	CloseHandle(hProcess);
 	return ret == 0 ? "" : file;
 }
+void* YunLai::GetProcessImageBase1(DWORD dwProcessId)
+{
+	PVOID pProcessImageBase = NULL;
+	MODULEENTRY32 me32 = { 0 };
+	me32.dwSize = sizeof(MODULEENTRY32);
+	// 获取指定进程全部模块的快照
+	HANDLE hModuleSnap = ::CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwProcessId);
+	if (INVALID_HANDLE_VALUE == hModuleSnap)
+	{
+	//	m_lastEroMsg = "CreateToolhelp32Snapshot Ero";
+		return pProcessImageBase;
+	}
+	// 获取快照中第一条信息
+	BOOL bRet = ::Module32First(hModuleSnap, &me32);
+	if (bRet)
+	{
+		// 获取加载基址
+		pProcessImageBase = (PVOID)me32.modBaseAddr;
+	}
+	// 关闭句柄
+	::CloseHandle(hModuleSnap);
+	return pProcessImageBase;
+}
+
+void* YunLai::GetProcessImageBase2(DWORD dwProcessId)
+{
+	PVOID pProcessImageBase = NULL;
+	//打开进程, 获取进程句柄
+	HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+	if (NULL == hProcess)
+	{
+	//	m_lastEroMsg = "OpenProcess Ero";
+		return pProcessImageBase;
+	}
+	// 遍历进程模块,
+	HMODULE hModule[100] = { 0 };
+	DWORD dwRet = 0;
+	BOOL bRet = ::EnumProcessModules(hProcess, (HMODULE *)(hModule), sizeof(hModule), &dwRet);
+	if (FALSE == bRet)
+	{
+		::CloseHandle(hProcess);
+	//	m_lastEroMsg = "EnumProcessModules Ero";
+		return pProcessImageBase;
+	}
+	// 获取第一个模块加载基址
+	pProcessImageBase = hModule[0];
+	// 关闭句柄
+	::CloseHandle(hProcess);
+	return pProcessImageBase;
+}
+
 void YunLai::WindowTransparentShow(HWND dstHwnd, int maxShow /*= 255*/, int speed/* = 15*/)
 {
 	long rtn = GetWindowLong(dstHwnd, GWL_EXSTYLE);	//    '取的窗口原先的样式
