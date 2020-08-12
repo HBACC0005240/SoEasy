@@ -1,6 +1,6 @@
 #include "GameWorkWgt.h"
 #include "stdafx.h"
-#include "gameservice.h"
+//#include "gameservice.h"
 GameWorkWgt::GameWorkWgt(QWidget *parent)
 	: QWidget(parent)
 {

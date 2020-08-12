@@ -4,6 +4,7 @@
 #include "GameData.h"
 #include <QListWidgetItem>
 #include "GameCtrl.h"
+#include <QDebug>
 AttachGameWnd::AttachGameWnd(QWidget *parent)
 	: QWidget(parent)
 {
@@ -22,9 +23,12 @@ void AttachGameWnd::on_pushButton_attach_clicked()
 	qint64 gameProcessID = pCurItem->data(Qt::UserRole).toInt();//ui.comboBox->currentData(Qt::UserRole).toInt();
 	HWND gameHwnd = YunLai::FindMainWindow(gameProcessID);
 	HDC gameHDC = GetDC(gameHwnd);
+	void* pBaseAddr = YunLai::GetProcessImageBase1(gameProcessID);
+	qDebug() << pBaseAddr;
 	GameData::getInstance().setGameProcess(gameProcessID);
 	GameData::getInstance().setGameHwnd(gameHwnd);
 	GameData::getInstance().setGameHDC(gameHDC);
+	GameData::getInstance().setGameBaseAddr((ULONG)pBaseAddr);
 	GameData::getInstance().initData();
 	emit g_pGameCtrl->signal_activeGameFZ();
 	g_pGameCtrl->StartUpdateTimer();

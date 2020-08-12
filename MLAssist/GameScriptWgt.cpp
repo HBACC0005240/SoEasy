@@ -152,4 +152,5 @@ void GameScriptWgt::doUpdateScriptRow(int row)
 	m_currentRow = row;
 	ui.tableWidget->selectRow(row);
 //	ui.tableWidget->setCurrentCell(row,0);
+	ui.label_curRow->setText(QString("Ыљдкаа:%1").arg(row+1));
 }

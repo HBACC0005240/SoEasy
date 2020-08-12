@@ -35,6 +35,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "Lua\Lua.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCGMap", "TestCGMap\TestCGMap.vcxproj", "{52C8D532-B7C6-4771-86E4-7EEFA1FE9279}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGAHook", "cgahook\cgahook.vcxproj", "{1159C2B4-D6BA-4167-9B7E-FB6C75004394}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGALib", "CGALib\CGALib.vcxproj", "{85FCBAC1-6F19-4754-B277-97E6386F6D51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -148,12 +152,26 @@ Global
 		{52C8D532-B7C6-4771-86E4-7EEFA1FE9279}.Release|Win32.ActiveCfg = Release|Win32
 		{52C8D532-B7C6-4771-86E4-7EEFA1FE9279}.Release|x64.ActiveCfg = Release|x64
 		{52C8D532-B7C6-4771-86E4-7EEFA1FE9279}.Release|x64.Build.0 = Release|x64
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Debug|Win32.Build.0 = Debug|Win32
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Debug|x64.ActiveCfg = Debug|Win32
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Release|Win32.ActiveCfg = Release|Win32
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Release|Win32.Build.0 = Release|Win32
+		{1159C2B4-D6BA-4167-9B7E-FB6C75004394}.Release|x64.ActiveCfg = Release|Win32
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Debug|Win32.ActiveCfg = Debug|Win32
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Debug|Win32.Build.0 = Debug|Win32
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Debug|x64.ActiveCfg = Debug|x64
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Debug|x64.Build.0 = Debug|x64
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|Win32.ActiveCfg = Release|Win32
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|Win32.Build.0 = Release|Win32
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|x64.ActiveCfg = Release|x64
+		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		Qt5Version = 5.14.2-msvc2017
 		SolutionGuid = {571D6A8A-B0B3-4E42-A3E9-1E7603DF7489}
+		Qt5Version = 5.14.2-msvc2017
 	EndGlobalSection
 EndGlobal

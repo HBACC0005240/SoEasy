@@ -63,6 +63,8 @@ public:
 	//进程
 	static void GetAllProcess(QMap<qint64,QString>& processInfo);
 	static QString GetPathByProcessID(DWORD pid);
+	static void* GetProcessImageBase1(DWORD dwProcessId);
+	static void* GetProcessImageBase2(DWORD dwProcessId);
 	//动画显示 及 隐藏窗口
 	static void WindowTransparentShow(HWND dstHwnd,int maxShow=255,int speed=15);
 	static void WindowTransparentFade(HWND dstHwnd, int minShow = 0, int speed = -15);
@@ -143,5 +145,6 @@ public:
 //	static bool DIBSnapshot(HWND hWnd, int scale, const SnapshotCallback &callback);
 //	static bool DIBToCvMat(cv::Mat &mat, void *pBuffer, size_t cbBuffer, int width, int height, int bbp);
 //	int HexToDecimalInt();
+	static QString m_lastEroMsg;
 };
 
