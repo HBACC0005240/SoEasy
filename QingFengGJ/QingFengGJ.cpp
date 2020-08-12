@@ -415,7 +415,7 @@ void Work(DWORD processID, int nIndex)
 	//std::cout << "erorCode:" << GetLastError() << "提示：写入代码失败\n";
 	//HANDLE hRemoteThread1 = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)callBase, nullptr, 0, 0);
 
-	bool bRet = WriteProcessMemory(hProcess, callBase, WorkCallArg, nThreadSize, &byWrite);
+	bool bRet = WriteProcessMemory(hProcess, callBase, callArg, nThreadSize, &byWrite);
 	if (bRet == false)
 	{
 		int eRoCode = GetLastError();
@@ -665,13 +665,12 @@ void selectDlgYes(DWORD processID)
 }
 bool renew(DWORD processID, int direction)
 {
-	return true;
-	SendString(processID);
-//	turn_about(processID,direction);
+//	SendString(processID);
+	turn_about(processID,direction);
 	int nHp = getPersionHP(processID);
 	int nMp = getPersionMP(processID);
-//	Sleep(1500);
-//	selectMpAndHp(processID);
+	Sleep(1500);
+	selectMpAndHp(processID);
 ////	remoteCall(processID, SelectBuMpAndHp);//选补血魔
 //	Sleep(1500);
 //	selectDlgYes(processID);
