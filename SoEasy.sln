@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGAHook", "cgahook\cgahook.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGALib", "CGALib\CGALib.vcxproj", "{85FCBAC1-6F19-4754-B277-97E6386F6D51}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LittleTool", "LittleTool\LittleTool.vcxproj", "{D90FBA79-CE2F-4768-9879-99F1409936AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -166,6 +168,12 @@ Global
 		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|Win32.Build.0 = Release|Win32
 		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|x64.ActiveCfg = Release|x64
 		{85FCBAC1-6F19-4754-B277-97E6386F6D51}.Release|x64.Build.0 = Release|x64
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Debug|Win32.Build.0 = Debug|Win32
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Debug|x64.ActiveCfg = Debug|Win32
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Release|Win32.ActiveCfg = Release|Win32
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Release|Win32.Build.0 = Release|Win32
+		{D90FBA79-CE2F-4768-9879-99F1409936AB}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

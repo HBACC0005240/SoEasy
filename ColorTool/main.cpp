@@ -49,7 +49,8 @@ int main(int argc, char *argv[])
 		.endNamespace();
 	GameData test;
 	luabridge::setGlobal(lua_state, &test, "GameData");//注册test_lua对象到lua
-//	lua_register(lua_state,"加法",add);
+	/*lua_register(lua_state,"加法", add);
+	lua_register(lua_state, "add", add);*/
 	//运行lua脚本
 	luaL_dofile(lua_state, "a.lua");
 	//关闭Lua
