@@ -7,7 +7,9 @@ static int g_curOneKey;
 static int g_userSetKey[5];
 
 static QHash<void*, int> g_comboBoxIndex;
-
+static QList<QComboBox*> g_comboBoxs;
+static QHash<QLineEdit*,QComboBox*> g_lineEditsHash;
+static QHash<void*, int> g_comboBoxMs;
 LittleTool::LittleTool(QWidget *parent)
     : QDialog(parent)
 {
@@ -38,13 +40,27 @@ void LittleTool::init()
 	connect(ui.comboBox_4, SIGNAL(currentIndexChanged(int)), this, SLOT(doComboBoxChanged(int)));
 	connect(ui.comboBox_5, SIGNAL(currentIndexChanged(int)), this, SLOT(doComboBoxChanged(int)));
 	connect(ui.comboBox_6, SIGNAL(currentIndexChanged(int)), this, SLOT(doComboBoxChanged(int)));
-
+	connect(ui.lineEdit_2,SIGNAL(textChanged(const QString &)),this,SLOT(doLineEditChanged(const QString&)));
+	connect(ui.lineEdit_3, SIGNAL(textChanged(const QString &)), this, SLOT(doLineEditChanged(const QString&)));
+	connect(ui.lineEdit_4, SIGNAL(textChanged(const QString &)), this, SLOT(doLineEditChanged(const QString&)));
+	connect(ui.lineEdit_5, SIGNAL(textChanged(const QString &)), this, SLOT(doLineEditChanged(const QString&)));
+	connect(ui.lineEdit_6, SIGNAL(textChanged(const QString &)), this, SLOT(doLineEditChanged(const QString&)));
 
 	ui.comboBox_2->addItem(QStringLiteral("Пе"), 0);
 	ui.comboBox_3->addItem(QStringLiteral("Пе"), 0);
 	ui.comboBox_4->addItem(QStringLiteral("Пе"), 0);
 	ui.comboBox_5->addItem(QStringLiteral("Пе"), 0);
 	ui.comboBox_6->addItem(QStringLiteral("Пе"), 0);
+	g_comboBoxs.append(ui.comboBox_2);
+	g_comboBoxs.append(ui.comboBox_3);
+	g_comboBoxs.append(ui.comboBox_4);
+	g_comboBoxs.append(ui.comboBox_5);
+	g_comboBoxs.append(ui.comboBox_6);
+	g_lineEditsHash.insert(ui.lineEdit_2, ui.comboBox_2);
+	g_lineEditsHash.insert(ui.lineEdit_3, ui.comboBox_3);
+	g_lineEditsHash.insert(ui.lineEdit_4, ui.comboBox_4);
+	g_lineEditsHash.insert(ui.lineEdit_5, ui.comboBox_5);
+	g_lineEditsHash.insert(ui.lineEdit_6, ui.comboBox_6);
 	for (int i = 0; i < 8; ++i)
 	{
 		QString itemName = QStringLiteral("F%1").arg(i + 1);
@@ -59,6 +75,12 @@ void LittleTool::init()
 	ui.comboBox_2->setCurrentIndex(6);
 	ui.comboBox_3->setCurrentIndex(7);
 	ui.comboBox_4->setCurrentIndex(8);
+
+	ui.lineEdit_2->setText("500");
+	ui.lineEdit_3->setText("500");
+	ui.lineEdit_4->setText("500");
+	ui.lineEdit_5->setText("500");
+	ui.lineEdit_6->setText("500");
 
 }
 
@@ -86,9 +108,12 @@ LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 				{
 					keybd_event(nUserKey, 0, 0, 0);
 					keybd_event(nUserKey, 0, KEYEVENTF_KEYUP, 0);
-					qDebug() << nUserKey;
+					int nVal = g_comboBoxMs.value(it.key());
+					Sleep(nVal);
+					qDebug() << nUserKey << nVal;
 				}
 			}
+			return 1;
 		/*	{
 				if (g_userSetKey[i] != 0)
 				{
@@ -129,27 +154,11 @@ void LittleTool::doComboBoxChanged(int nIndex)
 	g_comboBoxIndex.insert(pObj, pComboBox->currentData().toInt());
 }
 
-void LittleTool::doComboBoxChanged2(int nIndex)
+void LittleTool::doLineEditChanged(const QString& text)
 {
-	g_userSetKey[0] = ui.comboBox_2->currentData().toInt();
+	QObject* pObj = sender();
+	
+	QComboBox* pComboBox = g_lineEditsHash.value((QLineEdit*)pObj);
+	g_comboBoxMs.insert(pComboBox, text.toInt());
 }
 
-void LittleTool::doComboBoxChanged3(int nIndex)
-{
-
-}
-
-void LittleTool::doComboBoxChanged4(int nIndex)
-{
-
-}
-
-void LittleTool::doComboBoxChanged5(int nIndex)
-{
-
-}
-
-void LittleTool::doComboBoxChanged6(int nIndex)
-{
-
-}

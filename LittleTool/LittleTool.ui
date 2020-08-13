@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>153</width>
+    <width>215</width>
     <height>168</height>
    </rect>
   </property>
@@ -24,6 +24,13 @@
    <item row="0" column="1">
     <widget class="QComboBox" name="comboBox"/>
    </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>间隔/毫秒</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -33,6 +40,13 @@
    </item>
    <item row="1" column="1">
     <widget class="QComboBox" name="comboBox_2"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEdit_2">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
@@ -44,6 +58,13 @@
    <item row="2" column="1">
     <widget class="QComboBox" name="comboBox_3"/>
    </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="lineEdit_3">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
@@ -53,6 +74,13 @@
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="comboBox_4"/>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="lineEdit_4">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label_5">
@@ -64,6 +92,13 @@
    <item row="4" column="1">
     <widget class="QComboBox" name="comboBox_5"/>
    </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="lineEdit_5">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
@@ -73,6 +108,13 @@
    </item>
    <item row="5" column="1">
     <widget class="QComboBox" name="comboBox_6"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLineEdit" name="lineEdit_6">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -15,11 +15,7 @@ public:
 	void stopMonitor();
 public slots:
 	void doComboBoxChanged(int nIndex);
-	void doComboBoxChanged2(int nIndex);
-	void doComboBoxChanged3(int nIndex);
-	void doComboBoxChanged4(int nIndex);
-	void doComboBoxChanged5(int nIndex);
-	void doComboBoxChanged6(int nIndex);
+	void doLineEditChanged(const QString& text);
 
 private:
     Ui::LittleToolClass ui;
