@@ -351,7 +351,7 @@ LRESULT WPGTool::CallBackProc(DWORD _dwCode,DWORD _wParam,DWORD _lParam)
 			for (int i = 0; i < m_pHwndList.size(); i++)
 			{
 				HWND hwnduse = (HWND)m_pHwndList.at(i);		
-				YunLai::SetFocusToWnd(hwnduse);
+			//	YunLai::SetFocusToWnd(hwnduse);
 				::PostMessageA(hwnduse, _wParam, _wParam, newl);				
 			}
 		}

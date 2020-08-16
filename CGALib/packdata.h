@@ -1128,6 +1128,38 @@ namespace msgpack {
 				}
 			};
 
+			////game_type
+			//template<>
+			//struct convert<game_type> {
+			//	msgpack::object const& operator()(msgpack::object const& o, game_type& v) const {
+			//		if (o.type != msgpack::type::ARRAY) throw msgpack::type_error();
+			//		if (o.via.array.size != 1) throw msgpack::type_error();
+			//		v.reserved = o.via.array.ptr[0].as<int>();
+			//		return o;
+			//	}
+			//};
+
+			//template<>
+			//struct pack<game_type> {
+			//	template <typename Stream>
+			//	packer<Stream>& operator()(msgpack::packer<Stream>& o, game_type const& v) const {
+			//		// packing member variables as an array.
+			//		o.pack_array(1);
+			//		o.pack(v.reserved);
+			//		return o;
+			//	}
+			//};
+
+			//template <>
+			//struct object_with_zone<game_type> {
+			//	void operator()(msgpack::object::with_zone& o, game_type const& v) const {
+			//		o.type = type::ARRAY;
+			//		o.via.array.size = 110;
+			//		o.via.array.ptr = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object) * o.via.array.size));
+			//		o.via.array.ptr[0] = msgpack::object(v.reserved, o.zone);
+			//	}
+			//};
+
 			//cga_chat_msg_t
 			template<>
 			struct convert<cga_chat_msg_t> {

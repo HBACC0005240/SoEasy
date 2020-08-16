@@ -284,7 +284,9 @@ public:
 	cga_player_info_t GetPlayerInfo();
 	void(__cdecl *UI_OpenGatherDialog)(int skill_index, int sub_index);
 	void(__cdecl *Move_Player)();
-
+	int GetWorldStatus();
+	int GetGameStatus();
+	void remoteCall(DWORD processID, void* pCall);
 private:
 	DWORD m_gameProcessID;
 	HWND m_gameHwnd;	//ÓÎÏ·´°¿Ú¾ä±ú

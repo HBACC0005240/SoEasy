@@ -750,3 +750,58 @@ void GameData::getPersonInfo(PERSONINFO* pPerson)
 	if (pPerson == nullptr)return;
 	memcpy(pPerson,m_Infos,sizeof(m_Infos));
 }
+
+
+int GameData::GetWorldStatus()
+{
+	int worldStatus = *m_world_status;
+	return worldStatus;
+}
+
+int GameData::GetGameStatus()
+{
+	//if (*g_logback)
+	//	return 200;
+
+	int gameStatus = *m_game_status;
+
+	return gameStatus;
+}
+void GameData::remoteCall(DWORD processID, void* pCall)
+{
+	//EnableDebugPriv();//提升进程权限 VS2008以后的版本才需要
+	//HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
+	////DWORD nThreadSize = 0x400;
+	////LPVOID callBase = VirtualAllocEx(hProcess, nullptr, nThreadSize, MEM_COMMIT /*| MEM_RESERVE*/, PAGE_EXECUTE_READWRITE);
+	////if (callBase == nullptr)
+	////{
+	////	//std::cout << "erorCode:" << GetLastError() << ("提示：申请空间失败\n");
+	////	return;
+	////}
+	//int nTestArg[2];
+	//nTestArg[0]=
+	//LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(DWORD), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);	
+	//DWORD byWrite;
+	////bool bRet = WriteProcessMemory(hProcess, callBase, pCall, nThreadSize, &byWrite);
+	////if (bRet == false)
+	////{
+	//////	std::cout << "erorCode:" << GetLastError() << "提示：写入代码失败\n";
+	////	VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+	////	CloseHandle(hProcess);
+	////	return;
+	////}
+	//DWORD tId;
+	//HANDLE hRemoteThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)UI_OpenGatherDialog, nullptr, 0, &tId);
+	//if (hRemoteThread == nullptr)
+	//{
+	//	printf("提示：远程调用代码失败\n");
+	//	VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+	//	CloseHandle(hRemoteThread);
+	//	CloseHandle(hProcess);
+	//	return;
+	//}
+	//WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
+	//VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+	//CloseHandle(hRemoteThread);
+	//CloseHandle(hProcess);
+}

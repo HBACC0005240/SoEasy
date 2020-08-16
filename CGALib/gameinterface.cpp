@@ -6,7 +6,7 @@
 namespace CGAServiceProtocol
 {
 	using namespace CGA;
-	TIMAX_DEFINE_PROTOCOL(Initialize, void(cga_game_data_t));
+	TIMAX_DEFINE_PROTOCOL(Initialize, void(int));
 	TIMAX_DEFINE_PROTOCOL(Connect, bool());
 	TIMAX_DEFINE_PROTOCOL(IsInGame, int());
 	TIMAX_DEFINE_PROTOCOL(GetWorldStatus, int());
@@ -149,7 +149,7 @@ namespace CGA
 			}
 			return m_connected;
 		}
-		virtual bool Initialize(cga_game_data_t &data) {
+		virtual bool Initialize(int &data) {
 			if (m_connected) {
 				try {
 					m_client.call(std::chrono::milliseconds(10000), m_endpoint, CGAServiceProtocol::Initialize, data);

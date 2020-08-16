@@ -29,6 +29,7 @@
     <ProjectGuid>{85FCBAC1-6F19-4754-B277-97E6386F6D51}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CGALib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -116,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;CGA_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../boost_1_72_0;../rest_rpc/;../rest_rpc/spdlog/include;../rest_rpc/iguana;../rest_rpc/iguana/third_party/msgpack/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>L:\Environment\boost\boost_1_72_0;../rest_rpc/;../rest_rpc/spdlog/include;../rest_rpc/iguana;../rest_rpc/iguana/third_party/msgpack/include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4101</DisableSpecificWarnings>

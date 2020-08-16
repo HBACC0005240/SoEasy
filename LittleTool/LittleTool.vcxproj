@@ -47,6 +47,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;..\include\qxtglobalshortcut5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
     <QtInstall>5.14.2-msvc2017</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
@@ -90,8 +95,21 @@
     <QtRcc Include="LittleTool.qrc" />
     <QtUic Include="LittleTool.ui" />
     <QtMoc Include="LittleTool.h" />
+    <ClCompile Include="..\include\ITHotKeyProxy.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp" />
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp" />
     <ClCompile Include="LittleTool.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\include\ITHotKeyProxy.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h" />
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h" />
+    <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

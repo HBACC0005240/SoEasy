@@ -22,6 +22,9 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="qxtglobalshortcut5">
+      <UniqueIdentifier>{dcfde7dd-651a-4119-897f-bb71096dc5b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="LittleTool.qrc">
@@ -38,10 +41,47 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\ITHotKeyProxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="LittleTool.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
+      <Filter>qxtglobalshortcut5</Filter>
+    </QtMoc>
+    <QtMoc Include="..\include\ITHotKeyProxy.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

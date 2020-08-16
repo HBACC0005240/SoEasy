@@ -153,6 +153,13 @@ void GameDataWgt::doUpdateGameData()
 	GameData::getInstance().readBattleInfo();
 	GameData::getInstance().getPersonInfo(m_Infos);
 	refreshBattleUI();
+	//int nGameStatus = GameData::getInstance().GetGameStatus();
+	//int nWordStatus = GameData::getInstance().GetWorldStatus();
+	//if(nGameStatus == 1 && nWordStatus  == 2)
+	//	setItemText(4, 0, QString("连接断开"));
+	//else
+	//	setItemText(4, 0, QString("连接有效"));
+
 //	return;
 	POINT pi;
 	::GetCursorPos(&pi);

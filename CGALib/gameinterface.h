@@ -9,10 +9,12 @@ namespace CGA
 {
 	enum game_type
 	{
-		cg_se_3000,
-		cg_se_6000,
-		cg_item_6000,
-		polcn
+		cg_se_3000,		//怀旧
+		cg_se_6000,		//时长
+		cg_item_6000,	//道具
+		polcn,			//易玩通
+		cg_Korea,		//韩版
+		cg_Taiwan,		//台版
 	};
 
 	typedef struct cga_playerpet_detail_info_s
@@ -861,7 +863,7 @@ namespace CGA
 		virtual bool IsConnected() = 0;
 		virtual void Disconnect() = 0;
 		virtual bool Connect(int port) = 0;
-		virtual bool Initialize(cga_game_data_t &data) = 0;
+		virtual bool Initialize(int &data) = 0;
 
 		virtual bool IsInGame(int &ingame) = 0;
 		virtual bool GetWorldStatus(int &status) = 0;

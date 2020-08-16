@@ -1,6 +1,9 @@
 #include "LittleTool.h"
 #include <windows.h>
 #include <QDebug>
+#include <QMessageBox>
+#include "QxtGlobalShortcut.h"
+
 static HHOOK hookid = 0;
 static HHOOK g_hHook = 0;
 static int g_curOneKey;
@@ -17,7 +20,8 @@ LittleTool::LittleTool(QWidget *parent)
 	this->setWindowFlags(this->windowFlags() &~Qt::WindowContextHelpButtonHint);     //»•µÙ∞Ô÷˙
 	connect(ui.comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(doComboBoxChanged(int)));
 	init();
-	startMonitor();
+//	startMonitor();
+	initHotKey();
 }
 
 LittleTool::~LittleTool()
@@ -81,6 +85,31 @@ void LittleTool::init()
 	ui.lineEdit_4->setText("500");
 	ui.lineEdit_5->setText("500");
 	ui.lineEdit_6->setText("500");
+
+}
+
+void LittleTool::initHotKey()
+{
+	QxtGlobalShortcut *shortcut = new QxtGlobalShortcut(this);
+	if (shortcut)
+	{
+		if (shortcut->setShortcut(QKeySequence(Qt::Key_Escape), (HWND)NULL) == FALSE)
+		{
+			QMessageBox::information(this, "Ã· æ", "◊¢≤·∆Ù∂Ø»»º¸ ß∞‹", QMessageBox::Ok);
+		}
+		//connect(shortcut, SIGNAL(activated(int, int)), this, SIGNAL(signal_keyReleaseEvent(int, int)));
+		connect(shortcut, SIGNAL(activated(const QKeySequence&)), this, SLOT(dealHotKeyEvent(const QKeySequence&)));
+	}
+	//QxtGlobalShortcut *shortcut2 = new QxtGlobalShortcut(this);
+	//if (shortcut2)
+	//{
+	//	if (shortcut2->setShortcut(QKeySequence(ui.comboBox_2->currentText()), (HWND)NULL) == FALSE)
+	//	{
+	//		QMessageBox::information(this, "Ã· æ", "◊¢≤·Õ£÷π»»º¸ ß∞‹", QMessageBox::Ok);
+	//	}
+	//	//connect(shortcut, SIGNAL(activated(int, int)), this, SIGNAL(signal_keyReleaseEvent(int, int)));
+	//	connect(shortcut2, SIGNAL(activated(const QKeySequence&)), this, SLOT(dealHotKeyEvent(const QKeySequence&)));
+	//}
 
 }
 
@@ -160,5 +189,31 @@ void LittleTool::doLineEditChanged(const QString& text)
 	
 	QComboBox* pComboBox = g_lineEditsHash.value((QLineEdit*)pObj);
 	g_comboBoxMs.insert(pComboBox, text.toInt());
+}
+
+void LittleTool::dealHotKeyEvent(const QKeySequence& key)
+{
+	int nUserKey = 0;
+	for (auto it = g_comboBoxIndex.begin(); it != g_comboBoxIndex.end(); ++it)
+	{
+		nUserKey = it.value();
+		if (nUserKey != 0)
+		{
+			keybd_event(nUserKey, MapVirtualKey(nUserKey, 0), 0, 0);
+			keybd_event(nUserKey, MapVirtualKey(nUserKey, 0), KEYEVENTF_KEYUP, 0);
+			/*INPUT   keyin;
+			WORD wScan = MapVirtualKeyW(nUserKey, 0);
+			keyin.type = INPUT_KEYBOARD;
+			keyin.ki.wVk = nUserKey;
+			keyin.ki.wScan = wScan;
+			keyin.ki.time = 100;
+			keyin.ki.dwFlags = KEYEVENTF_UNICODE;
+			keyin.ki.dwExtraInfo = GetMessageExtraInfo();
+			::SendInput(1, &keyin, sizeof(INPUT));*/
+			int nVal = g_comboBoxMs.value(it.key());
+			Sleep(nVal);
+			qDebug() << nUserKey << nVal;
+		}
+	}
 }
 

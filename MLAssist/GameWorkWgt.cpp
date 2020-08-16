@@ -46,6 +46,37 @@ void GameWorkWgt::on_pushButton_useSkill_clicked()
 	QString skillName = ui.comboBox_skill->currentText();
 	int nCurIndex = ui.comboBox_skill->itemData(ui.comboBox_skill->currentIndex()).toInt();
 //	SendMessageA(GameData::getInstance().getGameHwnd(), WM_CGA_START_WORK, nCurIndex, 0);
+//	GameData::getInstance().UI_OpenGatherDialog(nCurIndex, 0);
+//
+//	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GameData::getInstance().getGamePID());	
+//	int nTestArg[2];
+//	nTestArg[0] = nCurIndex;
+//	nTestArg[1] = 0;
+//	LPVOID callArg = VirtualAllocEx(hProcess, nullptr, sizeof(nTestArg), MEM_COMMIT /*| MEM_RESERVE*/, PAGE_READWRITE);
+//	DWORD byWrite;
+//	bool bRet = WriteProcessMemory(hProcess, callArg, nTestArg, sizeof(nTestArg), &byWrite);
+//	if (bRet == false)
+//	{
+//	//	std::cout << "erorCode:" << GetLastError() << "提示：写入代码失败\n";
+//		VirtualFreeEx(hProcess, callArg, sizeof(nTestArg), MEM_DECOMMIT);
+//		CloseHandle(hProcess);
+//		return;
+//	}
+//	DWORD tId;
+//	HANDLE hRemoteThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GameData::getInstance().UI_OpenGatherDialog, callArg, 0, &tId);
+//	if (hRemoteThread == nullptr)
+//	{
+//		printf("提示：远程调用代码失败\n");
+//	//	VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+//		CloseHandle(hRemoteThread);
+//		CloseHandle(hProcess);
+//		return;
+//	}
+//	WaitForSingleObject(hRemoteThread, 0xFFFFFFF);//等待 ...
+////	VirtualFreeEx(hProcess, callBase, nThreadSize, MEM_DECOMMIT);
+//	CloseHandle(hRemoteThread);
+//	CloseHandle(hProcess);
+
 	GameData::getInstance().Work(skillName);
 }
 
