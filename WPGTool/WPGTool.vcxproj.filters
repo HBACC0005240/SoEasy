@@ -47,22 +47,15 @@
     <ClCompile Include="WPGTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
-    
     <ClCompile Include="..\include\ITHotKeyProxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
-    
-    
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp">
       <Filter>qxtglobalshortcut5</Filter>
     </ClCompile>
@@ -78,12 +71,14 @@
     <ClCompile Include="keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\YunLai.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -100,6 +95,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\YunLai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

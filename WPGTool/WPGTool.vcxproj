@@ -24,7 +24,13 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" /><PropertyGroup Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')"><QtMsBuild>$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild></PropertyGroup><Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')"><Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." /></Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">
+    <QtMsBuild>$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
@@ -33,7 +39,21 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" /><ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')"><Import Project="$(QtMsBuild)\qt_defaults.props" /></ImportGroup><PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"><QtInstall>5.14.2-msvc2017</QtInstall><QtModules>core;gui;widgets</QtModules></PropertyGroup><PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"><QtInstall>5.14.2-msvc2017</QtInstall><QtModules>core;gui;widgets</QtModules></PropertyGroup><ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')"><Import Project="$(QtMsBuild)\qt.props" /></ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <QtInstall>5.14.2-msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <QtInstall>5.14.2-msvc2017</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
@@ -59,7 +79,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName)d.exe</OutputFile>
@@ -67,7 +88,26 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-  <QtMoc><ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription><DynamicSource>output</DynamicSource><QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir><QtMocFileName>moc_%(Filename).cpp</QtMocFileName></QtMoc><QtRcc><InitFuncName>%(Filename)</InitFuncName><Compression>default</Compression><NoCompression>true</NoCompression><ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription><QtRccDir>.\GeneratedFiles</QtRccDir><QtRccFileName>qrc_%(Filename).cpp</QtRccFileName></QtRcc><QtUic><ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription><QtUicDir>.\GeneratedFiles</QtUicDir><QtUicFileName>ui_%(Filename).h</QtUicFileName></QtUic></ItemDefinitionGroup>
+    <QtMoc>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <InitFuncName>%(Filename)</InitFuncName>
+      <Compression>default</Compression>
+      <NoCompression>true</NoCompression>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <QtRccDir>.\GeneratedFiles</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>.\GeneratedFiles</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -79,7 +119,8 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <Optimization>Disabled</Optimization>
-    <MultiProcessorCompilation>true</MultiProcessorCompilation></ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
@@ -87,7 +128,26 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-  <QtMoc><ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription><DynamicSource>output</DynamicSource><QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir><QtMocFileName>moc_%(Filename).cpp</QtMocFileName></QtMoc><QtRcc><InitFuncName>%(Filename)</InitFuncName><Compression>default</Compression><NoCompression>true</NoCompression><ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription><QtRccDir>.\GeneratedFiles</QtRccDir><QtRccFileName>qrc_%(Filename).cpp</QtRccFileName></QtRcc><QtUic><ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription><QtUicDir>.\GeneratedFiles</QtUicDir><QtUicFileName>ui_%(Filename).h</QtUicFileName></QtUic></ItemDefinitionGroup>
+    <QtMoc>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>.\GeneratedFiles\$(ConfigurationName)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <InitFuncName>%(Filename)</InitFuncName>
+      <Compression>default</Compression>
+      <NoCompression>true</NoCompression>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <QtRccDir>.\GeneratedFiles</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>.\GeneratedFiles</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\include\ITHotKeyProxy.cpp" />
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobal.cpp" />
@@ -95,13 +155,7 @@
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_win.cpp" />
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem.cpp" />
     <ClCompile Include="..\include\qxtglobalshortcut5\qxtwindowsystem_win.cpp" />
-    
-    
-    
-    
-    
-    
-    
+    <ClCompile Include="..\include\YunLai.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mouse.cpp" />
@@ -113,68 +167,26 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\include\ITHotKeyProxy.h">
-      
-      
-      
-      
-      
-      
-      
-      
     </QtMoc>
     <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobal.h" />
     <QtMoc Include="..\include\qxtglobalshortcut5\qxtglobalshortcut.h">
-      
-      
-      
-      
-      
-      
-      
-      
     </QtMoc>
     <ClInclude Include="..\include\qxtglobalshortcut5\qxtglobalshortcut_p.h" />
     <ClInclude Include="..\include\qxtglobalshortcut5\qxtwindowsystem.h" />
-    
+    <ClInclude Include="..\include\YunLai.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="mouse.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <QtMoc Include="WPGTool.h">
-      
-      
-      
-      
-      
-      
-      
-      
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="WPGTool.ui">
-      
-      
-      
-      
-      
-      
-      
-      
-      
     </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="WPGTool.qrc">
-      
-      
-      
-      
-      
-      
-      
-      
-      
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +195,10 @@
   <ItemGroup>
     <None Include="Resources\passingThrough.ico" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" /><ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')"><Import Project="$(QtMsBuild)\qt.targets" /></ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
